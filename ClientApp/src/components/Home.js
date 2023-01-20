@@ -1,13 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
+import { useAuth } from "../api-authentication/AuthenticationService";
+import BaseForm from "./BaseForm";
 
-export class Home extends Component {
-  static displayName = Home.name;
+const initialValues = { nickname: "", password: "" };
+const fieldsAttributes = [
+  { id: "nickname", name: "nickname", fieldName: "Nickname" },
+  { id: "password", name: "password", fieldName: "Password" },
+];
 
-  render() {
-    return (
-      <div>
-        <h1 className="text-red-500 text-6xl">Home page</h1>
-      </div>
-    );
-  }
+export function Home() {
+  const { onLogin } = useAuth();
+
+  return (
+    <BaseForm
+      title={"Login"}
+      initialValues={initialValues}
+      fieldsAttributes={fieldsAttributes}
+      submitFunc={onLogin}
+      submitText={"Login"}
+      children={[
+        <p className="text-base">
+          Not a user?{" "}
+          <a className="text-blue-600 underline" href="/register">
+            register
+          </a>
+        </p>,
+      ]}
+    />
+  );
 }

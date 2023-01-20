@@ -6,9 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using agora.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace agora.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -31,31 +37,34 @@ namespace agora.Controllers
             return await _context.User.ToListAsync();
         }
 
-        // [HttpGet("{login}")]
-        // public async Task<ActionResult<User>> Login(User user)
-        // {
-        //     var userObj = _context.User.Where(u => u.Nickname.Equals(user.Nickname) && u.Password.Equals(user.Password)).FirstOrDefault();
-        //     if (userObj != null){
-                
-        //     }
-        // }
 
         // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-          if (_context.User == null)
-          {
-              return NotFound();
-          }
-            var user = await _context.User.FindAsync(id);
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            if (user == null)
-            {
-                return NotFound();
+        if (identity != null){
+            var userId = identity.FindFirst("Id")?.Value;
+            if(userId != id.ToString()) {
+                return Unauthorized();
             }
+        } else {
+            return Unauthorized();
+        }
 
-            return user;
+        if (_context.User == null)
+        {
+            return NotFound();
+        }
+        var user = await _context.User.FindAsync(id);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return user;
         }
 
         // PUT: api/User/5
@@ -89,20 +98,6 @@ namespace agora.Controllers
             return NoContent();
         }
 
-        // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-          if (_context.User == null)
-          {
-              return Problem("Entity set 'UserDbContext.User'  is null.");
-          }
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]
