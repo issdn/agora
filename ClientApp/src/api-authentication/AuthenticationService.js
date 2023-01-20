@@ -1,27 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-
-const auth = async (values) => {
-  const result = await axios
-    .post("https://localhost:7065/api/auth/login", values)
-    .catch((reason) => alert(reason));
-  return await result.data.token;
-};
+import { useDefaultNavigation } from "./Navigation";
 
 const AuthContext = React.createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [token, setToken] = useState("");
+  const defaultNavigation = useDefaultNavigation();
 
   const handleLogin = async (values) => {
-    const jwt = await auth(values);
-    setToken(jwt);
-
-    const origin = location.state?.from?.pathname || "/front";
-    navigate(origin);
+    await axios
+      .post("https://localhost:7065/api/auth/login", values)
+      .then((result) => {
+        setToken(result.data.token);
+        defaultNavigation("/front");
+      })
+      .catch((reason) => alert(reason));
   };
 
   const handleLogout = () => {

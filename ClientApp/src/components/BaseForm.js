@@ -21,8 +21,8 @@ export default function BaseForm({
         >
           <Form className="flex flex-col gap-y-12">
             <div className="flex flex-col gap-y-4">
-              {fieldsAttributes.map((attrs) => (
-                <div className="flex flex-col">
+              {fieldsAttributes.map((attrs, index) => (
+                <div key={index} className="flex flex-col">
                   <p className="text-base">{attrs.fieldName}</p>
                   <Field
                     className="bg-transparent focus:outline-none border-2 border-black p-2 focus:border-blue-600"
@@ -34,7 +34,7 @@ export default function BaseForm({
             </div>
             <div className="flex flex-col w-full gap-y-2">
               <button
-                className="bg-sunglow py-2 border-2 border-black"
+                className="bg-sunglow py-2 drop-shadow-[3px_3px_black] transition duration-400 hover:drop-shadow-none"
                 type="submit"
               >
                 {submitText ? submitText : "Submit"}

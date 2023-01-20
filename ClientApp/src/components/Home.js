@@ -19,7 +19,7 @@ export function Home() {
       submitFunc={onLogin}
       submitText={"Login"}
       children={[
-        <p className="text-base">
+        <p key={Math.random()} className="text-base">
           Not a user?{" "}
           <a className="text-blue-600 underline" href="/register">
             register

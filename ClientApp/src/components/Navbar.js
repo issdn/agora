@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../api-authentication/AuthenticationService";
 
 export default function Navbar() {
-  const { token, onLogin, onLogout } = useAuth();
+  const { token, onLogout } = useAuth();
 
   return (
     <div className="flex flex-row px-36 py-4 justify-between items-center font-karla">

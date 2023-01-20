@@ -7,6 +7,9 @@ using agora.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
 
 namespace agora.Controllers
 {
@@ -15,10 +18,11 @@ namespace agora.Controllers
     public class LoginController : ControllerBase
     {
         private readonly UserDbContext _context;
-
+        
         public LoginController(UserDbContext context)
         {
             _context = context;
+
         }
 
         [HttpPost("login")]
@@ -29,8 +33,14 @@ namespace agora.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            var userObj = _context.User.Where(u => u.Nickname.Equals(user.Nickname) && u.Password.Equals(user.Password)).FirstOrDefault();
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            var userObj = _context.User.Where(u => u.Nickname.Equals(user.Nickname)).FirstOrDefault();
             if (userObj != null){
+                PasswordVerificationResult passresult = hasher.VerifyHashedPassword(userObj, userObj.Password, user.Password);
+                if(passresult == 0){
+                    return Forbid();
+                }
                 var secretKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("randomasskeyhahahahahahahahahahaha"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var tokeOptions = new JwtSecurityToken(
@@ -52,14 +62,23 @@ namespace agora.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(User user)
         {
+
           if (_context.User == null)
           {
-              return Problem("Entity set 'UserDbContext.User'  is null.");
+              return Problem("Entity set 'UserDbContext.User' is null.");
           }
+
+          if(_context.User.Any(u => u.Nickname == user.Nickname) == true){
+            return Forbid();
+          }
+
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+            String password = hasher.HashPassword(user, user.Password);
+            user.Password = password;
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("Register", new { id = user.Id }, user);
         }
     }
 }

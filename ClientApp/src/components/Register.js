@@ -13,6 +13,7 @@ export default function Register() {
   const onRegister = async (values) => {
     await axios
       .post("https://localhost:7065/api/auth/register", values)
+      .then((res) => console.log(res))
       .catch((reason) => alert(reason));
   };
 
