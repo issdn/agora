@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
-import { Layout } from "./components/Layout";
 import {
   AuthProvider,
   AuthorizeRoute,
@@ -11,8 +10,8 @@ import Navbar from "./components/Navbar";
 export default function App() {
   return (
     <AuthProvider>
-      <Layout>
-        <Navbar />
+      <Navbar />
+      <div className="px-64">
         <Routes>
           {AppRoutes.map((route, index) => {
             const { element, requireAuth, ...rest } = route;
@@ -21,17 +20,13 @@ export default function App() {
                 key={index}
                 {...rest}
                 element={
-                  requireAuth ? (
-                    <AuthorizeRoute {...rest} element={element} />
-                  ) : (
-                    element
-                  )
+                  requireAuth ? <AuthorizeRoute element={element} /> : element
                 }
               />
             );
           })}
         </Routes>
-      </Layout>
+      </div>
     </AuthProvider>
   );
 }

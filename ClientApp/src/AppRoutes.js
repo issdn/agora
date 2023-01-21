@@ -1,6 +1,7 @@
 import { Home } from "./components/Home";
-import FrontPage from "./components/FrontPage";
 import Register from "./components/Register";
+import Login from "./components/Login";
+import PostEditor from "./components/PostEditor";
 
 const AppRoutes = [
   {
@@ -9,12 +10,16 @@ const AppRoutes = [
   },
   {
     requireAuth: true,
-    path: "/front",
-    element: <FrontPage />,
+    path: "/newpost",
+    element: <PostEditor />,
   },
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ];
 

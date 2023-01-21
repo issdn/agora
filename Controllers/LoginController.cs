@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
+using agora.Data;
 
 namespace agora.Controllers
 {
@@ -17,9 +18,9 @@ namespace agora.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly UserDbContext _context;
+        private readonly ForumDbContext _context;
         
-        public LoginController(UserDbContext context)
+        public LoginController(ForumDbContext context)
         {
             _context = context;
 
@@ -35,7 +36,7 @@ namespace agora.Controllers
 
             PasswordHasher<User> hasher = new PasswordHasher<User>();
 
-            var userObj = _context.User.Where(u => u.Nickname.Equals(user.Nickname)).FirstOrDefault();
+            var userObj = _context.Users.Where(u => u.Nickname.Equals(user.Nickname)).FirstOrDefault();
             if (userObj != null){
                 PasswordVerificationResult passresult = hasher.VerifyHashedPassword(userObj, userObj.Password, user.Password);
                 if(passresult == 0){
@@ -63,19 +64,19 @@ namespace agora.Controllers
         public async Task<ActionResult<User>> Register(User user)
         {
 
-          if (_context.User == null)
+          if (_context.Users == null)
           {
               return Problem("Entity set 'UserDbContext.User' is null.");
           }
 
-          if(_context.User.Any(u => u.Nickname == user.Nickname) == true){
+          if(_context.Users.Any(u => u.Nickname == user.Nickname) == true){
             return Forbid();
           }
 
             PasswordHasher<User> hasher = new PasswordHasher<User>();
             String password = hasher.HashPassword(user, user.Password);
             user.Password = password;
-            _context.User.Add(user);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Register", new { id = user.Id }, user);

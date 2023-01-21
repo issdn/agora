@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using agora.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using agora.Data;
 
 namespace agora.Controllers
 {
@@ -19,9 +20,9 @@ namespace agora.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserDbContext _context;
+        private readonly ForumDbContext _context;
 
-        public UserController(UserDbContext context)
+        public UserController(ForumDbContext context)
         {
             _context = context;
         }
@@ -30,11 +31,11 @@ namespace agora.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-          if (_context.User == null)
+          if (_context.Users == null)
           {
               return NotFound();
           }
-            return await _context.User.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
 
@@ -53,11 +54,11 @@ namespace agora.Controllers
             return Unauthorized();
         }
 
-        if (_context.User == null)
+        if (_context.Users == null)
         {
             return NotFound();
         }
-        var user = await _context.User.FindAsync(id);
+        var user = await _context.Users.FindAsync(id);
 
         if (user == null)
         {
@@ -103,17 +104,17 @@ namespace agora.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (_context.User == null)
+            if (_context.Users == null)
             {
                 return NotFound();
             }
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.User.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -121,7 +122,7 @@ namespace agora.Controllers
 
         private bool UserExists(int id)
         {
-            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,18 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
 using agora.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using agora.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddAuthorization();
-builder.Services.AddDbContext<UserDbContext>(dbContextOptions =>
-    dbContextOptions.UseMySQL(connectionString));
+builder.Services.AddDbContext<ForumDbContext>(dbContextOptions =>
+    dbContextOptions.UseMySql(connectionString, new MySqlServerVersion(new Version(8,0,31))));
 builder.Services.AddAuthentication(opt => {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

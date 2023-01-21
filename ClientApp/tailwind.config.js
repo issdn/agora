@@ -12,7 +12,7 @@ module.exports = {
       },
       fontFamily: {
         karla: ["karla"],
-        Inconsolata: ["Inconsolata"],
+        inconsolata: ["inconsolata"],
       },
     },
   },
