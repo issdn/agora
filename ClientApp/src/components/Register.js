@@ -2,6 +2,7 @@ import React from "react";
 import BaseForm from "./BaseForm";
 import axios from "axios";
 import { object, string, ref } from "yup";
+import { useNavigate } from "react-router-dom";
 
 const registerSchema = object().shape({
   email: string()
@@ -47,10 +48,12 @@ const fields = [
 ];
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const onRegister = async (values) => {
     await axios
       .post("https://localhost:7065/api/auth/register", values)
-      .then((res) => console.log(res))
+      .then(navigate("/login"))
       .catch((reason) => alert(reason));
   };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Formik, Field, Form } from "formik";
+import Button from "./Button";
 
 export default function BaseForm({
   title,
@@ -46,12 +47,12 @@ export default function BaseForm({
                 ))}
               </div>
               <div className="flex flex-col w-full gap-y-2">
-                <button
+                <Button
                   className="drop-shadow-[3px_3px_black] bg-sunglow py-2 transition duration-400 hover:drop-shadow-none"
                   type="submit"
                 >
                   {submitText ? submitText : "Submit"}
-                </button>
+                </Button>
                 {children}
               </div>
             </Form>

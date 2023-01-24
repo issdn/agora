@@ -5,6 +5,7 @@ import {
   AuthProvider,
   AuthorizeRoute,
 } from "./api-authentication/AuthenticationService";
+import VerifyAuth from "./api-authentication/VerifyAuth";
 import Navbar from "./components/Navbar";
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
           })}
         </Routes>
       </div>
+      <VerifyAuth />
     </AuthProvider>
   );
 }

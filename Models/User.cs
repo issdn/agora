@@ -17,6 +17,7 @@ namespace agora
         public string Email { get; set; } = null!;
         public int? Reputation { get; set; }
 
+        public virtual PostDraft? PostDraft { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }

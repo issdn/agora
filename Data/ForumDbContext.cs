@@ -19,6 +19,7 @@ namespace agora.Data
 
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<PostDraft> PostsDrafts { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -97,6 +98,35 @@ namespace agora.Data
                 entity.Property(e => e.Reputation)
                     .HasColumnName("reputation")
                     .HasDefaultValueSql("'0'");
+            });
+
+            modelBuilder.Entity<PostDraft>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("post_drafts");
+
+                entity.HasIndex(e => e.UserId, "fk_post_drafts_user1_idx")
+                    .IsUnique();
+
+                entity.Property(e => e.UserId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.Body)
+                    .HasColumnType("mediumtext")
+                    .HasColumnName("body");
+
+                entity.Property(e => e.Title)
+                    .HasColumnType("tinytext")
+                    .HasColumnName("title");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.PostDraft)
+                    .HasForeignKey<PostDraft>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_post_drafts_user");
             });
 
             OnModelCreatingPartial(modelBuilder);

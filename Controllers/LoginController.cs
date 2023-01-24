@@ -27,7 +27,7 @@ namespace agora.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserLogin user)
+        public IActionResult Login(UserDTO user)
         {   
             if (user is null)
             {

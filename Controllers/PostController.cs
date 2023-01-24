@@ -36,8 +36,8 @@ namespace agora.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("addpost")]
-        public async Task<ActionResult<Post>> AddPost(NewPost post)
+        [HttpPost("createpost")]
+        public async Task<ActionResult<Post>> CreatePost(PostDTO post)
         {
           if (_context.Posts == null)
           {
@@ -50,9 +50,41 @@ namespace agora.Controllers
             }
 
             var userId = identity.FindFirst("Id")?.Value;
-
+            Post newPost = new Post();
+            newPost.Body = post.Body;
+            newPost.Title = post.Title;
+            newPost.UserId = Convert.ToUInt32(userId);
+             _context.Posts.Add(newPost);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("AddPost", post);
+            return CreatedAtAction("CreatePost", post);
+        }
+
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut("draft/save")]
+        public async Task<ActionResult<PostDraftDTO>> SaveDraft(PostDraftDTO postDraft)
+        {
+          if (_context.PostsDrafts == null || _context.Users == null)
+          {
+              return Problem("Users or PostsDraft database is empty.");
+          }
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if(identity == null) {
+                return Unauthorized();
+            }
+
+            var userId = identity.FindFirst("Id")?.Value;
+
+            var draft = _context.PostsDrafts.Where(d => d.UserId.ToString() == userId).FirstOrDefault();
+            if(draft != null) {
+                draft.Body = postDraft.Body;
+                draft.Title = postDraft.Title;
+                await _context.SaveChangesAsync();
+                return Ok();
+            } else {
+                return Problem("Server error.");
+            }
         }
     }
 }

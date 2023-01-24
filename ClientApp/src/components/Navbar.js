@@ -6,16 +6,25 @@ export default function Navbar() {
 
   return (
     <div className="flex flex-row px-36 py-4 justify-between items-center font-karla">
-      <h1 className="text-3xl">AGORA</h1>
+      <h1 className="text-3xl">
+        <a href="/">AGORA</a>
+      </h1>
       <ul className="flex flex-row text-2xl gap-x-8">
-        <li>
-          {token ? (
-            <p onClick={onLogout}>logout</p>
-          ) : (
-            <a href="/login">login</a>
-          )}
-        </li>
-        <li>{token ? null : <a href="register">register</a>}</li>
+        {token ? (
+          <>
+            <li>
+              <a href="/newpost">Create Post</a>
+            </li>
+            <li>
+              <p onClick={onLogout}>Logout</p>
+            </li>
+          </>
+        ) : (
+          <li>
+            <a href="/login">Login</a>
+          </li>
+        )}
+        <li>{token ? null : <a href="register">Register</a>}</li>
       </ul>
     </div>
   );

@@ -5,8 +5,8 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 const AuthContext = React.createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token"));
   const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   const handleLogin = async (values) => {
     await axios
@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleLogout = () => {
+    localStorage.setItem("token", null);
     setToken(null);
   };
 
