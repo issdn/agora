@@ -11,8 +11,8 @@ using agora.Data;
 namespace agora.Migrations
 {
     [DbContext(typeof(ForumDbContext))]
-    [Migration("20230123001222_DraftsAdded")]
-    partial class DraftsAdded
+    [Migration("20230126151458_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,35 @@ namespace agora.Migrations
 
             MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8mb4");
 
-            modelBuilder.Entity("agora.Models.Post", b =>
+            modelBuilder.Entity("agora.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<uint>("UserId")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("mediumtext")
+                        .HasColumnName("body");
+
+                    b.HasKey("Id", "UserId")
+                        .HasName("PRIMARY")
+                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                    b.HasIndex(new[] { "UserId" }, "fk_comments_user_idx");
+
+                    b.HasIndex(new[] { "Id" }, "id_UNIQUE")
+                        .IsUnique();
+
+                    b.ToTable("comment", (string)null);
+                });
+
+            modelBuilder.Entity("agora.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,12 +69,16 @@ namespace agora.Migrations
                         .HasColumnName("body");
 
                     b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("Likes")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("likes");
+                        .HasColumnName("likes")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -60,18 +92,14 @@ namespace agora.Migrations
                     b.HasIndex(new[] { "UserId" }, "fk_post_user_idx");
 
                     b.HasIndex(new[] { "Id" }, "id_UNIQUE")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasDatabaseName("id_UNIQUE1");
 
                     b.ToTable("post", (string)null);
                 });
 
-            modelBuilder.Entity("agora.Models.PostDraft", b =>
+            modelBuilder.Entity("agora.PostDraft", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
                     b.Property<uint>("UserId")
                         .HasColumnType("int unsigned")
                         .HasColumnName("user_id");
@@ -84,20 +112,13 @@ namespace agora.Migrations
                         .HasColumnType("tinytext")
                         .HasColumnName("title");
 
-                    b.HasKey("Id", "UserId")
-                        .HasName("PRIMARY")
-                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    b.HasKey("UserId")
+                        .HasName("PRIMARY");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex(new[] { "UserId" }, "fk_post_draft_user_idx")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "UserId" }, "fk_post_drafts_user_idx");
-
-                    b.HasIndex(new[] { "Id" }, "id_UNIQUE")
-                        .IsUnique()
-                        .HasDatabaseName("id_UNIQUE1");
-
-                    b.ToTable("post_drafts", (string)null);
+                    b.ToTable("post_draft", (string)null);
                 });
 
             modelBuilder.Entity("agora.User", b =>
@@ -139,7 +160,47 @@ namespace agora.Migrations
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("agora.Models.Post", b =>
+            modelBuilder.Entity("PostComment", b =>
+                {
+                    b.Property<int>("CommentsId")
+                        .HasColumnType("int")
+                        .HasColumnName("comments_id");
+
+                    b.Property<uint>("CommentsUserId")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("comments_user_id");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int")
+                        .HasColumnName("post_id");
+
+                    b.Property<uint>("PostUserId")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("post_user_id");
+
+                    b.HasKey("CommentsId", "CommentsUserId", "PostId", "PostUserId")
+                        .HasName("PRIMARY")
+                        .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
+
+                    b.HasIndex(new[] { "PostId", "PostUserId" }, "fk_post_commen_comment_idx");
+
+                    b.HasIndex(new[] { "CommentsId", "CommentsUserId" }, "fk_post_comment_post_idx");
+
+                    b.ToTable("post_comment", (string)null);
+                });
+
+            modelBuilder.Entity("agora.Comment", b =>
+                {
+                    b.HasOne("agora.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_comments_user");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("agora.Post", b =>
                 {
                     b.HasOne("agora.User", "User")
                         .WithMany("Posts")
@@ -150,19 +211,36 @@ namespace agora.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("agora.Models.PostDraft", b =>
+            modelBuilder.Entity("agora.PostDraft", b =>
                 {
                     b.HasOne("agora.User", "User")
                         .WithOne("PostDraft")
-                        .HasForeignKey("agora.Models.PostDraft", "UserId")
+                        .HasForeignKey("agora.PostDraft", "UserId")
                         .IsRequired()
-                        .HasConstraintName("fk_post_drafts_user");
+                        .HasConstraintName("fk_post_draft_user");
 
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PostComment", b =>
+                {
+                    b.HasOne("agora.Comment", null)
+                        .WithMany()
+                        .HasForeignKey("CommentsId", "CommentsUserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_post_comment_comment");
+
+                    b.HasOne("agora.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId", "PostUserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_post_comment_post");
+                });
+
             modelBuilder.Entity("agora.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("PostDraft");
 
                     b.Navigation("Posts");

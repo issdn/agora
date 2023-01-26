@@ -19,7 +19,7 @@ namespace agora.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ForumDbContext _context;
-        
+
         public LoginController(ForumDbContext context)
         {
             _context = context;
@@ -28,7 +28,7 @@ namespace agora.Controllers
 
         [HttpPost("login")]
         public IActionResult Login(UserDTO user)
-        {   
+        {
             if (user is null)
             {
                 return BadRequest("Invalid client request");
@@ -37,9 +37,11 @@ namespace agora.Controllers
             PasswordHasher<User> hasher = new PasswordHasher<User>();
 
             var userObj = _context.Users.Where(u => u.Nickname.Equals(user.Nickname)).FirstOrDefault();
-            if (userObj != null){
+            if (userObj != null)
+            {
                 PasswordVerificationResult passresult = hasher.VerifyHashedPassword(userObj, userObj.Password, user.Password);
-                if(passresult == 0){
+                if (passresult == 0)
+                {
                     return Forbid();
                 }
                 var secretKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("randomasskeyhahahahahahahahahahaha"));
@@ -64,14 +66,15 @@ namespace agora.Controllers
         public async Task<ActionResult<User>> Register(User user)
         {
 
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'UserDbContext.User' is null.");
-          }
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'UserDbContext.User' is null.");
+            }
 
-          if(_context.Users.Any(u => u.Nickname == user.Nickname) == true){
-            return Forbid();
-          }
+            if (_context.Users.Any(u => u.Nickname == user.Nickname) == true)
+            {
+                return Forbid();
+            }
 
             PasswordHasher<User> hasher = new PasswordHasher<User>();
             String password = hasher.HashPassword(user, user.Password);

@@ -31,10 +31,10 @@ namespace agora.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
             return await _context.Users.ToListAsync();
         }
 
@@ -43,29 +43,33 @@ namespace agora.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-        if (identity != null){
-            var userId = identity.FindFirst("Id")?.Value;
-            if(userId != id.ToString()) {
+            if (identity != null)
+            {
+                var userId = identity.FindFirst("Id")?.Value;
+                if (userId != id.ToString())
+                {
+                    return Unauthorized();
+                }
+            }
+            else
+            {
                 return Unauthorized();
             }
-        } else {
-            return Unauthorized();
-        }
 
-        if (_context.Users == null)
-        {
-            return NotFound();
-        }
-        var user = await _context.Users.FindAsync(id);
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+            var user = await _context.Users.FindAsync(id);
 
-        if (user == null)
-        {
-            return NotFound();
-        }
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        return user;
+            return user;
         }
 
         // PUT: api/User/5

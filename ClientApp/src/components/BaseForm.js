@@ -1,6 +1,8 @@
 import React from "react";
 import { Formik, Field, Form } from "formik";
 import Button from "./Button";
+import { useAuth } from "../api/api-authentication/AuthenticationService";
+import axios from "axios";
 
 export default function BaseForm({
   title,
@@ -49,7 +51,7 @@ export default function BaseForm({
               <div className="flex flex-col w-full gap-y-2">
                 <Button
                   className="drop-shadow-[3px_3px_black] bg-sunglow py-2 transition duration-400 hover:drop-shadow-none"
-                  type="submit"
+                  rest={{ type: "submit" }}
                 >
                   {submitText ? submitText : "Submit"}
                 </Button>

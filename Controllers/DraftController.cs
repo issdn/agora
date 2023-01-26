@@ -15,14 +15,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace agora.Controllers
-{   
+{
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/postdraft")]
     [ApiController]
     public class DraftController : ControllerBase
     {
         private readonly ForumDbContext _context;
-        
+
         public DraftController(ForumDbContext context)
         {
             _context = context;
@@ -31,32 +31,37 @@ namespace agora.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PostDraft>> GetDraft()
-        {   
+        {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if(identity == null) {
+            if (identity == null)
+            {
                 return Unauthorized();
             }
             var userId = Convert.ToUInt32(identity.FindFirst("Id")?.Value);
-            var databaseDraft = _context.PostsDrafts.Where(d => d.UserId == userId).FirstOrDefault();
-            if (databaseDraft == null){   
-                databaseDraft = _context.PostsDrafts.Add(new PostDraft{Title = "", Body = "", UserId = userId}).Entity;
+            var databaseDraft = _context.PostDrafts.Where(d => d.UserId == userId).FirstOrDefault();
+            if (databaseDraft == null)
+            {
+                databaseDraft = _context.PostDrafts.Add(new PostDraft { Title = "", Body = "", UserId = userId }).Entity;
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetDraft", databaseDraft);
-            } else {
+            }
+            else
+            {
                 return CreatedAtAction("GetDraft", databaseDraft);
             }
         }
 
         [HttpPut]
         public async Task<IActionResult> SaveDraft(PostDraftDTO draft)
-        {   
+        {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if(identity == null) {
+            if (identity == null)
+            {
                 return Unauthorized();
             }
             var userId = Convert.ToUInt32(identity.FindFirst("Id")?.Value);
-            var databaseDraft = _context.PostsDrafts.Where(d => d.UserId == userId).FirstOrDefault();
-            if (databaseDraft == null) {return NotFound();}
+            var databaseDraft = _context.PostDrafts.Where(d => d.UserId == userId).FirstOrDefault();
+            if (databaseDraft == null) { return NotFound(); }
             databaseDraft.Title = draft.Title;
             databaseDraft.Body = draft.Body;
             await _context.SaveChangesAsync();

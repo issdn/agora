@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using agora.Models;
 
 namespace agora
 {
@@ -8,6 +7,7 @@ namespace agora
     {
         public User()
         {
+            Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
         }
 
@@ -18,6 +18,7 @@ namespace agora
         public int? Reputation { get; set; }
 
         public virtual PostDraft? PostDraft { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }

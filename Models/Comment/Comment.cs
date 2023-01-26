@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace agora.Models
+namespace agora
 {
-    public partial class Post
+    public partial class Comment
     {
+        public Comment()
+        {
+            Posts = new HashSet<Post>();
+        }
+
         public int Id { get; set; }
-        public string Title { get; set; } = null!;
         public string Body { get; set; } = null!;
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-        public int? Likes { get; set; } = 0;
         public uint UserId { get; set; }
+
         public virtual User User { get; set; } = null!;
+
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

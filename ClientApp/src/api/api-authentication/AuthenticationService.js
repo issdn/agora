@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AuthContext = React.createContext(null);
 
@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   const handleLogin = async (values) => {
-    await axios
-      .post("https://localhost:7065/api/auth/login", values)
+    axios
+      .post("api/auth/login", values)
       .then((result) => {
         setToken(result.data.token);
         localStorage.setItem("token", result.data.token);

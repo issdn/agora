@@ -4,15 +4,15 @@ import AppRoutes from "./AppRoutes";
 import {
   AuthProvider,
   AuthorizeRoute,
-} from "./api-authentication/AuthenticationService";
-import VerifyAuth from "./api-authentication/VerifyAuth";
+} from "./api/api-authentication/AuthenticationService";
+import VerifyAuth from "./api/api-authentication/VerifyAuth";
 import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
     <AuthProvider>
       <Navbar />
-      <div className="px-64">
+      <div className="px-64 py-8">
         <Routes>
           {AppRoutes.map((route, index) => {
             const { element, requireAuth, ...rest } = route;

@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../api-authentication/AuthenticationService";
+import { useAuth } from "../api/api-authentication/AuthenticationService";
 import BaseForm from "./BaseForm";
 import { object, string } from "yup";
 

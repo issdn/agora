@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Button from "./Button";
+import { useAuth } from "../api/api-authentication/AuthenticationService";
 import axios from "axios";
-import { useAuth } from "../api-authentication/AuthenticationService";
 
 const TEST_TITLE = "What is Lorem Ipsum?";
 const TEST_BODY =
@@ -18,18 +18,19 @@ export default function PostEditor() {
   const saveData = () => {
     axios
       .put(
-        "https://localhost:7065/api/postdraft",
-        { Title: title, Body: body },
+        "api/postdraft",
+        { title: title, body: body },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
         }
       )
-      .catch((reason) => console.log(reason));
+      .then((res) => console.log(res))
+      .catch((reason) => alert(reason));
   };
 
   useEffect(() => {
     axios
-      .get("https://localhost:7065/api/postdraft", {
+      .get("api/postdraft", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -39,16 +40,19 @@ export default function PostEditor() {
       .catch((reason) => console.log(reason));
   }, []);
 
+  useEffect(() => {
+    handleInput();
+  }, [body, title]);
+
   const handleCreatePost = (e) => {
     e.preventDefault();
     axios
       .post(
-        "https://localhost:7065/api/Post/createpost",
+        "api/post/createpost",
+        { title: title, body: body },
         {
-          title: title,
-          body: body,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+          headers: { Authorization: `Bearer ${token}` },
+        }
       )
       .then((res) => console.log(res))
       .catch((reason) => alert(reason));
@@ -72,16 +76,14 @@ export default function PostEditor() {
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
-              handleInput();
             }}
             placeholder="Title goes here..."
             className="text-4xl p-4"
           />
           <div
             suppressContentEditableWarning={true}
-            onInput={(e) => {
-              setBody(e.target.innerHTML);
-              handleInput();
+            onBlur={(e) => {
+              setBody(e.target.innerText);
             }}
             placeholder="Your thoughts go here..."
             className="h-full bg-white break-words p-4 text-xl before:block before:text-gray-500 empty:before:content-[attr(placeholder)]"

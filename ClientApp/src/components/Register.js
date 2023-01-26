@@ -1,8 +1,8 @@
 import React from "react";
 import BaseForm from "./BaseForm";
-import axios from "axios";
 import { object, string, ref } from "yup";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const registerSchema = object().shape({
   email: string()
@@ -20,11 +20,17 @@ const registerSchema = object().shape({
   ),
 });
 
+const getRandomInt = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
+const randomInt = getRandomInt(1000);
+
 const initialValues = {
-  email: "",
-  nickname: "",
-  password: "",
-  passconfirmation: "",
+  email: `admin${randomInt}@em.de`,
+  nickname: "admin" + randomInt,
+  password: "admin" + randomInt,
+  passconfirmation: "admin" + randomInt,
 };
 
 const fields = [
@@ -52,19 +58,21 @@ export default function Register() {
 
   const onRegister = async (values) => {
     await axios
-      .post("https://localhost:7065/api/auth/register", values)
+      .post("api/auth/register", values)
       .then(navigate("/login"))
       .catch((reason) => alert(reason));
   };
 
   return (
-    <BaseForm
-      title={"Register"}
-      initialValues={initialValues}
-      fields={fields}
-      validationSchema={registerSchema}
-      submitFunc={onRegister}
-      submitText={"Register"}
-    />
+    <div className="flex flex-col">
+      <BaseForm
+        title={"Register"}
+        initialValues={initialValues}
+        fields={fields}
+        validationSchema={registerSchema}
+        submitFunc={onRegister}
+        submitText={"Register"}
+      />
+    </div>
   );
 }

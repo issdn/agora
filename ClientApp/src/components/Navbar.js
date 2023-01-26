@@ -1,11 +1,11 @@
 import React from "react";
-import { useAuth } from "../api-authentication/AuthenticationService";
+import { useAuth } from "../api/api-authentication/AuthenticationService";
 
 export default function Navbar() {
   const { token, onLogout } = useAuth();
 
   return (
-    <div className="flex flex-row px-36 py-4 justify-between items-center font-karla">
+    <div className="flex flex-row px-12 py-4 justify-between items-center font-inconsolata border-b border-black">
       <h1 className="text-3xl">
         <a href="/">AGORA</a>
       </h1>
@@ -16,7 +16,7 @@ export default function Navbar() {
               <a href="/newpost">Create Post</a>
             </li>
             <li>
-              <p onClick={onLogout}>Logout</p>
+              <p className="cursor-pointer" onClick={onLogout}>Logout</p>
             </li>
           </>
         ) : (
@@ -24,7 +24,7 @@ export default function Navbar() {
             <a href="/login">Login</a>
           </li>
         )}
-        <li>{token ? null : <a href="register">Register</a>}</li>
+        <li>{token ? null : <a className="bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 rounded-lg text-white" href="register">Register</a>}</li>
       </ul>
     </div>
   );
