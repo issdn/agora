@@ -5,7 +5,7 @@ export default function Navbar() {
   const { token, onLogout } = useAuth();
 
   return (
-    <div className="flex flex-row px-12 py-4 justify-between items-center font-inconsolata border-b border-black">
+    <div className="flex w-full bg-cultured flex-row px-12 py-4 justify-between items-center font-inconsolata border-b border-black fixed">
       <h1 className="text-3xl">
         <a href="/">AGORA</a>
       </h1>

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
-export default function Button({ children, styles, rest }) {
+export default function Button({ children, styles, rest }: {children: ReactElement | string, styles: string, rest?: React.ButtonHTMLAttributes<HTMLButtonElement>}) {
   return (
     <button
       {...rest}

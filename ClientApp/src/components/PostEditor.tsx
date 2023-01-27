@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import axios from "axios";
+import BigInput from "./BigInput"
+import { AuthContextType } from "../types/appTypes";
 
 const TEST_TITLE = "What is Lorem Ipsum?";
 const TEST_BODY =
@@ -9,11 +11,11 @@ const TEST_BODY =
 const SAVE_MS = 1000;
 
 export default function PostEditor() {
-  const { token } = useAuth();
+  const { token } = useAuth() as {token: AuthContextType["token"]};
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [timer, setTimer] = useState(SAVE_MS);
-  const [timeoutId, setTimeoutId] = useState(null);
+  const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null);
 
   const saveData = () => {
     axios
@@ -44,7 +46,7 @@ export default function PostEditor() {
     handleInput();
   }, [body, title]);
 
-  const handleCreatePost = (e) => {
+  const handleCreatePost = (e: FormEvent) => {
     e.preventDefault();
     axios
       .post(
@@ -59,7 +61,7 @@ export default function PostEditor() {
   };
 
   const handleInput = () => {
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId as NodeJS.Timeout);
     setTimer(1000);
     setTimeoutId(setTimeout(() => saveData(), timer));
   };
@@ -80,17 +82,7 @@ export default function PostEditor() {
             placeholder="Title goes here..."
             className="text-4xl p-4"
           />
-          <div
-            suppressContentEditableWarning={true}
-            onBlur={(e) => {
-              setBody(e.target.innerText);
-            }}
-            placeholder="Your thoughts go here..."
-            className="h-full bg-white break-words p-4 text-xl before:block before:text-gray-500 empty:before:content-[attr(placeholder)]"
-            contentEditable
-          >
-            {body}
-          </div>
+          <BigInput body={body} setBody={setBody}/>
           <div className="w-1/2 flex flex-row gap-x-16">
             <Button styles={"w-full md:w-64"}>Create</Button>
             <button

@@ -46,14 +46,16 @@ namespace agora.Controllers
             }).ToListAsync();
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPostsByUserId(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Post>> GetPostsByUserId(int id)
         {
             if (_context.Posts == null)
             {
                 return NotFound();
             }
-            return await _context.Posts.Where(u => u.UserId == id).ToListAsync();
+            var post = await _context.Posts.Where(u => u.Id == id).FirstOrDefaultAsync();
+            if (post == null) { return NotFound(); }
+            return post;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

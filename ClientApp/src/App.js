@@ -12,7 +12,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Navbar />
-      <div className="px-64 py-8">
+      <div className="px-64 pt-24 pb-8">
         <Routes>
           {AppRoutes.map((route, index) => {
             const { element, requireAuth, ...rest } = route;
