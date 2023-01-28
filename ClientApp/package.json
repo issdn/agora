@@ -8,6 +8,7 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "axios": "^1.2.5",
+    "draft-js": "^0.11.7",
     "formik": "^2.2.9",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.6.0",
@@ -36,6 +37,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.10",
     "ajv": "^8.11.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.18.0",

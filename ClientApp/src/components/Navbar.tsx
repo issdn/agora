@@ -1,8 +1,9 @@
 import React from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
+import { AuthContextType } from "../types/appTypes";
 
 export default function Navbar() {
-  const { token, onLogout } = useAuth();
+  const { token, onLogout } = useAuth() as {token: AuthContextType["token"], onLogout: AuthContextType["onLogout"]};
 
   return (
     <div className="flex w-full bg-cultured flex-row px-12 py-4 justify-between items-center font-inconsolata border-b border-black fixed">

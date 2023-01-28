@@ -2,7 +2,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import axios from "axios";
-import BigInput from "./BigInput"
+import BigInput from "./BigInput";
 import { AuthContextType } from "../types/appTypes";
 
 const TEST_TITLE = "What is Lorem Ipsum?";
@@ -11,7 +11,7 @@ const TEST_BODY =
 const SAVE_MS = 1000;
 
 export default function PostEditor() {
-  const { token } = useAuth() as {token: AuthContextType["token"]};
+  const { token } = useAuth() as { token: AuthContextType["token"] };
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [timer, setTimer] = useState(SAVE_MS);
@@ -82,7 +82,11 @@ export default function PostEditor() {
             placeholder="Title goes here..."
             className="text-4xl p-4"
           />
-          <BigInput body={body} setBody={setBody}/>
+          <BigInput
+            body={body}
+            setBody={setBody}
+            attributes={{ placeholder: "Your thoughts go here..." }}
+          />
           <div className="w-1/2 flex flex-row gap-x-16">
             <Button styles={"w-full md:w-64"}>Create</Button>
             <button

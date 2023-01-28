@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace agora
+namespace agora.Models
 {
     public partial class PostDraft
     {
         public string? Title { get; set; }
         public string? Body { get; set; }
-        public uint UserId { get; set; }
+        public string Autor { get; set; } = null!;
 
-        public virtual User User { get; set; } = null!;
+        public virtual User AutorNavigation { get; set; } = null!;
     }
 }

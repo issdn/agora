@@ -50,14 +50,13 @@ namespace agora.Controllers
                     issuer: "https://localhost:7065",
                     audience: "https://localhost:7065",
                     claims: new List<Claim>{
-                        new Claim("id", userObj.Id.ToString()),
                         new Claim("nickname", userObj.Nickname),
                     },
                     expires: DateTime.Now.AddMinutes(5),
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return Ok(new AuthenticatedResponse { Token = tokenString });
+                return Ok(new AuthenticatedResponse { Token = tokenString, Nickname = userObj.Nickname });
             }
             return Unauthorized();
         }
@@ -82,7 +81,7 @@ namespace agora.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Register", new { id = user.Id }, user);
+            return CreatedAtAction("Register", user);
         }
     }
 }

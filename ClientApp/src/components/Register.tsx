@@ -3,6 +3,7 @@ import BaseForm from "./BaseForm";
 import { object, string, ref } from "yup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserRegisterDTO } from "../types/apiTypes";
 
 const registerSchema = object().shape({
   email: string()
@@ -20,7 +21,7 @@ const registerSchema = object().shape({
   ),
 });
 
-const getRandomInt = (max) => {
+const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
 };
 
@@ -56,10 +57,10 @@ const fields = [
 export default function Register() {
   const navigate = useNavigate();
 
-  const onRegister = async (values) => {
+  const onRegister = async (values: UserRegisterDTO) => {
     await axios
       .post("api/auth/register", values)
-      .then(navigate("/login"))
+      .then(() => navigate("/login"))
       .catch((reason) => alert(reason));
   };
 

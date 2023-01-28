@@ -9,11 +9,8 @@ export default function VerifyAuth() {
   };
 
   const isTokenExpired = (token: string) => {
-    if (token === "null" || token === null) return true;
-    return (
-      Date.now() >=
-      JSON.parse(Buffer.from(token.split(".")[1]).toString()).exp * 1000
-    );
+    if (token === null || token === "") return true;
+    return Date.now() >= JSON.parse(atob(token.split(".")[1])).exp * 1000;
   };
 
   useEffect(() => {

@@ -6,5 +6,6 @@ namespace agora
     public partial class CommentDTO
     {
         public string Body { get; set; } = null!;
+        public int PostId { get; set; }
     }
 }

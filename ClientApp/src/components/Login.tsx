@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import BaseForm from "./BaseForm";
 import { object, string } from "yup";
+import { AuthContextType } from "../types/appTypes";
 
 const loginSchema = object().shape({
   nickname: string()
@@ -25,7 +26,7 @@ const fields = [
 ];
 
 export default function Login() {
-  const { onLogin } = useAuth();
+  const { onLogin } = useAuth() as AuthContextType;
 
   return (
     <BaseForm
@@ -35,14 +36,13 @@ export default function Login() {
       validationSchema={loginSchema}
       submitFunc={onLogin}
       submitText={"Login"}
-      children={[
-        <p key={Math.random()} className="text-base">
-          Not a user?{" "}
-          <a className="text-blue-600 underline" href="/register">
-            register
-          </a>
-        </p>,
-      ]}
-    />
+    >
+      <p key={Math.random()} className="text-base">
+        Not a user?{" "}
+        <a className="text-blue-600 underline" href="/register">
+          register
+        </a>
+      </p>
+    </BaseForm>
   );
 }

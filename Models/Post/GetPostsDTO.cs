@@ -10,6 +10,6 @@ namespace agora
         public DateTime? CreatedAt { get; set; }
         public int? Likes { get; set; }
         public uint UserId { get; set; }
-        public string UserNickname { get; set; } = null!;
+        public string Autor { get; set; } = null!;
     }
 }

@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PostInfoDTO } from "../types/apiTypes";
+import PrettyDate from "./DataWithIcons/PrettyDate";
+import IconInformation from "./DataWithIcons/IconInformation";
 
 // Gradients from https://uigradients.com/
 const gradients = [
@@ -20,19 +22,14 @@ const getRandomGradient = () => {
   return gradients[Math.floor(Math.random() * gradients.length)];
 };
 
-const prettyDate = (date: string) => {
-  let prettyDate = new Date(date.replace(/\s/g, "T")).toLocaleDateString();
-  return prettyDate;
-};
-
-export default function PostCard({ postData } : {postData: PostInfoDTO}) {
+export default function PostCard({ postData }: { postData: PostInfoDTO }) {
   const randomGradient = getRandomGradient();
   const navigate = useNavigate();
 
   return (
     <div
       onClick={() => navigate(`/post/${postData.id}`)}
-      className="cursor-pointer p-4 font-karla text-white flex flex-col gap-y-4 rounded-xl"
+      className="cursor-pointer p-4 text-white flex flex-col gap-y-4 rounded-xl"
       style={{
         background: `linear-gradient(90deg, ${randomGradient[0]}, ${randomGradient[1]})`,
       }}
@@ -40,23 +37,14 @@ export default function PostCard({ postData } : {postData: PostInfoDTO}) {
       <h1 className="font-bold text-2xl">{postData.title}</h1>
       <div className="flex flex-row justify-between text-sm">
         <div className="flex flex-row gap-x-8">
-          <div className="flex flex-row gap-x-2 items-center">
-            <span className="material-symbols-outlined text-xl">
-              calendar_month
-            </span>
-            <p>{prettyDate(postData.createdAt)}</p>
-          </div>
-          <div className="flex flex-row gap-x-2 items-center">
-            <span className="material-symbols-outlined text-xl">thumb_up</span>
-            <p>{postData.likes}</p>
-          </div>
+          <PrettyDate date={postData.createdAt} />
+          <IconInformation iconName="thumb_up" information={postData.likes} />
         </div>
-        <div className="flex flex-row items-center bg-gray-800 rounded-md px-2">
-          <span className="material-symbols-outlined text-xl">person</span>
-          <p className="bg-gray-800 rounded-md w-fit px-2">
-            {postData.userNickname}
-          </p>
-        </div>
+        <IconInformation
+          iconName="person"
+          information={postData.autor}
+          type="tag"
+        />
       </div>
     </div>
   );

@@ -40,15 +40,15 @@ namespace agora.Controllers
 
 
         // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        [HttpGet("{nickname}")]
+        public async Task<ActionResult<User>> GetUser(string nickname)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             if (identity != null)
             {
-                var userId = identity.FindFirst("Id")?.Value;
-                if (userId != id.ToString())
+                var jwtNickname = identity.FindFirst("Nickname")?.Value;
+                if (jwtNickname != nickname)
                 {
                     return Unauthorized();
                 }
@@ -62,7 +62,7 @@ namespace agora.Controllers
             {
                 return NotFound();
             }
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(nickname);
 
             if (user == null)
             {
@@ -75,9 +75,9 @@ namespace agora.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(string nickname, User user)
         {
-            if (id != user.Id)
+            if (nickname != user.Nickname)
             {
                 return BadRequest();
             }
@@ -90,7 +90,7 @@ namespace agora.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(nickname))
                 {
                     return NotFound();
                 }
@@ -124,9 +124,19 @@ namespace agora.Controllers
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        public static string GetIdentityClaim(HttpContext httpContext)
         {
-            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+            {
+                return null!;
+            }
+            return identity.FindFirst("Nickname")!.Value;
+
+        }
+        private bool UserExists(string nickname)
+        {
+            return (_context.Users?.Any(e => e.Nickname == nickname)).GetValueOrDefault();
         }
     }
 }

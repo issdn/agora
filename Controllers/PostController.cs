@@ -31,6 +31,7 @@ namespace agora.Controllers
             {
                 return NotFound();
             }
+
             return await _context
             .Posts
             .OrderByDescending(p => p.CreatedAt)
@@ -41,8 +42,7 @@ namespace agora.Controllers
                 Title = p.Title,
                 CreatedAt = p.CreatedAt,
                 Likes = p.Likes,
-                UserId = p.UserId,
-                UserNickname = p.UserNickname
+                Autor = p.Autor
             }).ToListAsync();
         }
 
@@ -72,15 +72,12 @@ namespace agora.Controllers
             {
                 return Unauthorized();
             }
-
-            var userId = identity.FindFirst("Id")?.Value;
             var userNickname = identity.FindFirst("Nickname")?.Value;
             if (userNickname == null) { return Problem("Server error. identity.Nickname is null."); };
             Post newPost = new Post();
             newPost.Body = post.Body;
             newPost.Title = post.Title;
-            newPost.UserId = Convert.ToUInt32(userId);
-            newPost.UserNickname = userNickname;
+            newPost.Autor = userNickname;
             _context.Posts.Add(newPost);
             await _context.SaveChangesAsync();
             return CreatedAtAction("CreatePost", post);
@@ -102,9 +99,9 @@ namespace agora.Controllers
                 return Unauthorized();
             }
 
-            var userId = identity.FindFirst("Id")?.Value;
+            var userNickname = identity.FindFirst("c")?.Value;
 
-            var draft = _context.PostDrafts.Where(d => d.UserId.ToString() == userId).FirstOrDefault();
+            var draft = _context.PostDrafts.Where(d => d.Autor == userNickname).FirstOrDefault();
             if (draft != null)
             {
                 draft.Body = postDraft.Body;

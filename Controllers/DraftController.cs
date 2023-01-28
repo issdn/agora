@@ -32,16 +32,13 @@ namespace agora.Controllers
         [HttpGet]
         public async Task<ActionResult<PostDraft>> GetDraft()
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return Unauthorized();
-            }
-            var userId = Convert.ToUInt32(identity.FindFirst("Id")?.Value);
-            var databaseDraft = _context.PostDrafts.Where(d => d.UserId == userId).FirstOrDefault();
+            var userNickname = UserController.GetIdentityClaim(HttpContext);
+            if (userNickname == null) { return Unauthorized(); }
+
+            var databaseDraft = _context.PostDrafts.Where(d => d.Autor == userNickname).FirstOrDefault();
             if (databaseDraft == null)
             {
-                databaseDraft = _context.PostDrafts.Add(new PostDraft { Title = "", Body = "", UserId = userId }).Entity;
+                databaseDraft = _context.PostDrafts.Add(new PostDraft { Title = "", Body = "", Autor = userNickname }).Entity;
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetDraft", databaseDraft);
             }
@@ -54,14 +51,12 @@ namespace agora.Controllers
         [HttpPut]
         public async Task<IActionResult> SaveDraft(PostDraftDTO draft)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return Unauthorized();
-            }
-            var userId = Convert.ToUInt32(identity.FindFirst("Id")?.Value);
-            var databaseDraft = _context.PostDrafts.Where(d => d.UserId == userId).FirstOrDefault();
+            var userNickname = UserController.GetIdentityClaim(HttpContext);
+            if (userNickname == null) { return Unauthorized(); }
+
+            var databaseDraft = _context.PostDrafts.Where(d => d.Autor == userNickname).FirstOrDefault();
             if (databaseDraft == null) { return NotFound(); }
+
             databaseDraft.Title = draft.Title;
             databaseDraft.Body = draft.Body;
             await _context.SaveChangesAsync();

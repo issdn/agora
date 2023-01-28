@@ -6,13 +6,15 @@ import { AuthContextType } from "../../types/appTypes";
 
 const AuthContext = React.createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children } : {children: React.ReactNode}) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [nickname, setNickname] = useState("");
 
   const handleLogin = async (values: UserLoginDTO) => {
     axios.post("api/auth/login", values).then((result) => {
       setToken(result.data.token);
+      setNickname(result.data.nickname);
       localStorage.setItem("token", result.data.token);
       navigate("/newpost");
     });
@@ -24,6 +26,7 @@ export const AuthProvider = ({ children } : {children: React.ReactNode}) => {
   };
 
   const value: AuthContextType = {
+    nickname,
     token,
     onLogin: handleLogin,
     onLogout: handleLogout,
@@ -36,8 +39,8 @@ export const useAuth = () => {
   return React.useContext(AuthContext);
 };
 
-export const AuthorizeRoute = ({ element }: {element: ReactElement}) => {
-  const { token } = useAuth() as {token: AuthContextType["token"]};
+export const AuthorizeRoute = ({ element }: { element: ReactElement }) => {
+  const { token } = useAuth() as { token: AuthContextType["token"] };
   const location = useLocation();
 
   if (!token) {
