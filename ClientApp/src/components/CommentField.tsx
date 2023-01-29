@@ -1,6 +1,5 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import BigInput from "./BigInput";
-import Button from "./Button";
 
 export default function CommentField({
   comment,
@@ -10,20 +9,17 @@ export default function CommentField({
 }: {
   comment: string;
   setComment: React.Dispatch<React.SetStateAction<string>>;
-  submitComment: (e: FormEvent) => void;
+  submitComment: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   styles?: string;
 }) {
-  const checkIfShouldSubmit = (e: any) => {
+  const checkIfShouldSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       submitComment(e);
     }
   };
 
   return (
-    <form
-      onSubmit={submitComment}
-      className={`flex flex-col gap-y-4 w-full ${styles}`}
-    >
+    <form className={`flex flex-col w-full ${styles}`}>
       <BigInput
         body={comment}
         setBody={setComment}
@@ -34,9 +30,9 @@ export default function CommentField({
         }}
       />
       <div className="flex flex-row justify-end">
-        <div className="flex flex-row w-1/4 gap-x-4">
-          <Button styles="w-full">Submit</Button>
-        </div>
+        <p className="text-sm">
+          Press <b>Enter</b> to submit.
+        </p>
       </div>
     </form>
   );

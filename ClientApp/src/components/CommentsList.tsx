@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { GetCommentDTO } from "../types/apiTypes";
 import { prettyDate } from "../scripts/utils";
 import Button from "./Button";
 import Icon from "./DataWithIcons/Icon";
+import { useAuth } from "../api/api-authentication/AuthenticationService";
 
 export default function CommentsList({
   postId,
@@ -16,6 +17,18 @@ export default function CommentsList({
 }) {
   const [commentsFetched, setCommentsFetched] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+
+  const { nickname, token } = useAuth() as { nickname: string; token: string };
+
+  const deleteComment = (commentId: number) => {
+    axios
+      .delete(`api/comment/` + commentId, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() =>
+        setComments(comments.filter((comment) => comment.id !== commentId))
+      );
+  };
 
   const fetchComments = () => {
     if (postId !== undefined) {
@@ -45,6 +58,13 @@ export default function CommentsList({
         <div className="flex flex-row gap-x-8">
           <p>{c.autor}</p>
           <p>{prettyDate(c.createdAt)}</p>
+          {nickname === c.autor ? (
+            <Icon
+              onClick={() => deleteComment(c.id)}
+              iconName="delete_forever"
+              styles="cursor-pointer"
+            />
+          ) : null}
         </div>
       </div>
     ));

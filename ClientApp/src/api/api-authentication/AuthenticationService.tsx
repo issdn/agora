@@ -9,20 +9,23 @@ const AuthContext = React.createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(localStorage.getItem("nickname"));
 
   const handleLogin = async (values: UserLoginDTO) => {
     axios.post("api/auth/login", values).then((result) => {
       setToken(result.data.token);
       setNickname(result.data.nickname);
       localStorage.setItem("token", result.data.token);
+      localStorage.setItem("nickname", result.data.nickname);
       navigate("/newpost");
     });
   };
 
   const handleLogout = () => {
     localStorage.setItem("token", "");
+    localStorage.setItem("nickname", "");
     setToken(null);
+    setNickname(null);
   };
 
   const value: AuthContextType = {

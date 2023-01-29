@@ -28,8 +28,9 @@ export default function Post() {
     axios.get("api/post/" + id).then((res) => setPost(res.data));
   }, []);
 
-  const submitComment = async (e: FormEvent) => {
+  const submitComment = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
+    if (!(e.target as HTMLTextAreaElement)?.value) return;
     axios
       .post(
         "api/comment",
@@ -39,8 +40,9 @@ export default function Post() {
         }
       )
       .then((res) => {
-        setComment("");
+        (e.target as HTMLTextAreaElement).value = "";
         setComments([res.data, ...comments]);
+        setComment("");
       });
   };
 
@@ -85,12 +87,14 @@ export default function Post() {
           <p className={`text-${sizes[sizeIndex]}`}>{(post as PostDTO).body}</p>
         </div>
       </div>
-      <CommentField
-        submitComment={submitComment}
-        setComment={setComment}
-        comment={comment}
-        styles="mt-16"
-      />
+      {token ? (
+        <CommentField
+          submitComment={submitComment}
+          setComment={setComment}
+          comment={comment}
+          styles="mt-16"
+        />
+      ) : null}
       <CommentsList
         comments={comments}
         setComments={setComments}

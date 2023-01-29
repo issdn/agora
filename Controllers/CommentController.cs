@@ -36,7 +36,7 @@ namespace agora.Controllers
             return await _context
             .Comments
             .Where(c => c.PostId == postId)
-            // .OrderByDescending(p => p.CreatedAt)
+            .OrderByDescending(p => p.CreatedAt)
             .Select(p => new GetCommentDTO
             {
                 Id = p.Id,
@@ -67,7 +67,7 @@ namespace agora.Controllers
             return CreatedAtAction("PostComment", newComment);
         }
 
-        // DELETE: api/Comment/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {

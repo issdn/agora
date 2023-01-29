@@ -1,4 +1,5 @@
 import React, { AllHTMLAttributes, useRef } from "react";
+import "draft-js/dist/Draft.css";
 
 export default function BigInput({
   body,
@@ -9,20 +10,31 @@ export default function BigInput({
   body: string;
   setBody: React.Dispatch<React.SetStateAction<string>>;
   styles?: string;
-  attributes?: AllHTMLAttributes<HTMLInputElement>;
+  attributes?: AllHTMLAttributes<HTMLTextAreaElement>;
 }) {
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const areaRef = useRef<HTMLTextAreaElement | null>(null);
+
   return (
-    <div
-      ref={bodyRef}
-      suppressContentEditableWarning={true}
-      onInput={(e: any) => {
-        (bodyRef.current as HTMLDivElement).innerText = e.target.innerText;
-        setBody(e.target.innerText);
+    <textarea
+      value={body}
+      style={{
+        height: areaRef.current?.scrollHeight
+          ? areaRef.current?.scrollHeight
+          : "1px",
       }}
+      onChange={(e) => {
+        if (!e.target.value) {
+          e.target.rows = 1;
+          e.target.style.height = "1px";
+        }
+      }}
+      ref={areaRef}
       {...attributes}
-      className={`h-full cursor-text bg-white break-words p-4 text-xl before:block before:text-gray-500 empty:before:content-[attr(placeholder)] ${styles}`}
-      contentEditable
-    ></div>
+      onInput={(e: any) => {
+        setBody(e.target.value);
+      }}
+      className={`resize-none h-1 overflow-y-hidden cursor-text bg-white break-words p-2 text-xl border focus:border-blue-700 outline-none border-black
+       ${styles}`}
+    ></textarea>
   );
 }
