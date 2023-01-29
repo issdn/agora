@@ -1,10 +1,11 @@
-import axios from "axios";
+import { axiosInstance } from "../api/axiosInterceptors";
 import React, { useState } from "react";
 import { GetCommentDTO } from "../types/apiTypes";
 import { prettyDate } from "../scripts/utils";
 import Button from "./Button";
-import Icon from "./DataWithIcons/Icon";
+import Icon from "./iconify/Icon";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
+import { AuthContextType } from "../types/appTypes";
 
 export default function CommentsList({
   postId,
@@ -18,13 +19,11 @@ export default function CommentsList({
   const [commentsFetched, setCommentsFetched] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
 
-  const { nickname, token } = useAuth() as { nickname: string; token: string };
+  const { nickname } = useAuth() as { nickname: AuthContextType["nickname"] };
 
   const deleteComment = (commentId: number) => {
-    axios
-      .delete(`api/comment/` + commentId, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    axiosInstance
+      .delete(`api/comment/` + commentId)
       .then(() =>
         setComments(comments.filter((comment) => comment.id !== commentId))
       );
@@ -32,7 +31,7 @@ export default function CommentsList({
 
   const fetchComments = () => {
     if (postId !== undefined) {
-      axios.get(`api/comment/${postId}`).then((res) => {
+      axiosInstance.get(`api/comment/${postId}`).then((res) => {
         setComments(res.data);
         setCommentsFetched(true);
         setCommentsOpen(true);

@@ -2,7 +2,7 @@ import React from "react";
 import BaseForm from "./BaseForm";
 import { object, string, ref } from "yup";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../api/axiosInterceptors";
 import { UserRegisterDTO } from "../types/apiTypes";
 
 const registerSchema = object().shape({
@@ -58,7 +58,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const onRegister = async (values: UserRegisterDTO) => {
-    await axios
+    await axiosInstance
       .post("api/auth/register", values)
       .then(() => navigate("/login"))
       .catch((reason) => alert(reason));

@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PostInfoDTO } from "../types/apiTypes";
-import PrettyDate from "./DataWithIcons/PrettyDate";
-import IconInformation from "./DataWithIcons/IconInformation";
+import PrettyDate from "./iconify/PrettyDate";
+import IconInformation from "./iconify/IconInformation";
 
 // Gradients from https://uigradients.com/
 const gradients = [

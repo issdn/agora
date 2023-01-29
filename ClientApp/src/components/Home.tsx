@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import { axiosInstance } from "../api/axiosInterceptors";
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { PostInfoDTO } from "../types/apiTypes";
@@ -7,7 +8,7 @@ export function Home() {
   const [posts, setPosts] = useState<PostInfoDTO[]>([]);
 
   useEffect(() => {
-    axios.get("api/post").then((res: AxiosResponse<PostInfoDTO[]>) => {
+    axiosInstance.get("api/post").then((res: AxiosResponse<PostInfoDTO[]>) => {
       setPosts(res.data);
     });
   }, []);

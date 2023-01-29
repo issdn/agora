@@ -1,9 +1,9 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { axiosInstance } from "../api/axiosInterceptors";
 import { useParams } from "react-router-dom";
 import { PostDTO } from "../types/apiTypes";
-import PrettyDate from "./DataWithIcons/PrettyDate";
-import IconInformation from "./DataWithIcons/IconInformation";
+import PrettyDate from "./iconify/PrettyDate";
+import IconInformation from "./iconify/IconInformation";
 import CommentField from "./CommentField";
 import CommentsList from "./CommentsList";
 import { GetCommentDTO } from "../types/apiTypes";
@@ -25,20 +25,14 @@ export default function Post() {
   let { id } = useParams();
 
   useEffect(() => {
-    axios.get("api/post/" + id).then((res) => setPost(res.data));
+    axiosInstance.get("api/post/" + id).then((res) => setPost(res.data));
   }, []);
 
   const submitComment = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     if (!(e.target as HTMLTextAreaElement)?.value) return;
-    axios
-      .post(
-        "api/comment",
-        { body: comment, postId: (post as PostDTO).id },
-        {
-          headers: { Authorization: token ? `Bearer ${token}` : "" },
-        }
-      )
+    axiosInstance
+      .post("api/comment", { body: comment, postId: (post as PostDTO).id })
       .then((res) => {
         (e.target as HTMLTextAreaElement).value = "";
         setComments([res.data, ...comments]);

@@ -1,5 +1,4 @@
 import React, { AllHTMLAttributes, useRef } from "react";
-import "draft-js/dist/Draft.css";
 
 export default function BigInput({
   body,

@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
-import axios from "axios";
+import { axiosInstance } from "../api/axiosInterceptors";
 import BigInput from "./BigInput";
 import { AuthContextType } from "../types/appTypes";
 
@@ -11,30 +11,21 @@ const TEST_BODY =
 const SAVE_MS = 1000;
 
 export default function PostEditor() {
-  const { token } = useAuth() as { token: AuthContextType["token"] };
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [timer, setTimer] = useState(SAVE_MS);
   const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null);
 
   const saveData = () => {
-    axios
-      .put(
-        "api/postdraft",
-        { title: title, body: body },
-        {
-          headers: { Authorization: token ? `Bearer ${token}` : "" },
-        }
-      )
+    axiosInstance
+      .put("api/postdraft", { title: title, body: body })
       .then((res) => console.log(res))
       .catch((reason) => alert(reason));
   };
 
   useEffect(() => {
-    axios
-      .get("api/postdraft", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    axiosInstance
+      .get("api/postdraft")
       .then((res) => {
         setTitle(res.data.title);
         setBody(res.data.body);
@@ -48,14 +39,8 @@ export default function PostEditor() {
 
   const handleCreatePost = (e: FormEvent) => {
     e.preventDefault();
-    axios
-      .post(
-        "api/post/createpost",
-        { title: title, body: body },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+    axiosInstance
+      .post("api/post/createpost", { title: title, body: body })
       .then((res) => console.log(res))
       .catch((reason) => alert(reason));
   };
