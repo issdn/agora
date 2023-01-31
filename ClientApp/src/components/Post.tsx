@@ -9,6 +9,7 @@ import CommentsList from "./CommentsList";
 import { GetCommentDTO } from "../types/apiTypes";
 import { AuthContextType } from "../types/appTypes";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
+import LikeButton from "./iconify/LikeButton";
 
 const sizes = ["sm", "base", "lg", "xl", "2xl"];
 
@@ -23,6 +24,30 @@ export default function Post() {
   const [comment, setComment] = useState("");
 
   let { id } = useParams();
+
+  const addLike = async () => {
+    await axiosInstance
+      .post("api/post/like/" + (post as PostDTO).id)
+      .then((res) => {
+        if (res.data === "Liked") {
+          setPost({
+            ...post,
+            likes: (post as PostDTO).likes + 1,
+            userDoesLike: true,
+          });
+        } else {
+          setPost({
+            ...post,
+            likes: (post as PostDTO).likes - 1,
+            userDoesLike: false,
+          });
+        }
+      });
+  };
+
+  const handleLike = async () => {
+    await addLike();
+  };
 
   useEffect(() => {
     axiosInstance.get("api/post/" + id).then((res) => setPost(res.data));
@@ -45,6 +70,7 @@ export default function Post() {
       <div className="flex flex-col gap-y-1">
         <h1 className="text-4xl font-inconsolata font-bold">
           {(post as PostDTO).title}
+          {(post as PostDTO).userDoesLike}
         </h1>
         <div className="flex flex-row justify-between border-black">
           <div className="flex flex-row gap-x-8">
@@ -53,9 +79,10 @@ export default function Post() {
               information={(post as PostDTO).autor}
             />
             <PrettyDate date={(post as PostDTO).createdAt} />
-            <IconInformation
-              iconName="thumb_up"
-              information={(post as PostDTO).likes}
+            <LikeButton
+              liked={(post as PostDTO).userDoesLike}
+              handleLike={handleLike}
+              likes={(post as PostDTO).likes}
             />
           </div>
         </div>
@@ -93,6 +120,7 @@ export default function Post() {
         comments={comments}
         setComments={setComments}
         postId={(post as PostDTO).id}
+        numberOfComments={(post as PostDTO).commentsNumber}
       />
     </div>
   );

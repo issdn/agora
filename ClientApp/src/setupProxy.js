@@ -15,6 +15,8 @@ const context = [
   "api/postdraft",
   "api/post/createpost",
   "api/comment",
+  "api/post/like",
+  "api/post/dislike",
 ];
 
 module.exports = function (app) {

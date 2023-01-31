@@ -3,10 +3,12 @@ import React from "react";
 export default function Icon({
   iconName,
   styles,
+  filled,
   onClick,
 }: {
   iconName: string;
   styles?: string;
+  filled?: boolean;
   onClick?: (e: React.MouseEvent) => void;
 }) {
   return (

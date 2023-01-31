@@ -11,10 +11,12 @@ export default function CommentsList({
   postId,
   comments,
   setComments,
+  numberOfComments,
 }: {
   postId: number;
   comments: GetCommentDTO[];
   setComments: React.Dispatch<React.SetStateAction<GetCommentDTO[]>>;
+  numberOfComments: number;
 }) {
   const [commentsFetched, setCommentsFetched] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -76,7 +78,7 @@ export default function CommentsList({
         type="clear"
         styles="w-fit flex flex-row"
       >
-        <p>Comments</p>
+        <p>Comments ({numberOfComments})</p>
         <Icon
           iconName="expand_more"
           styles={`text-2xl ${commentsOpen ? "rotate-180" : ""}`}

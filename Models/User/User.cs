@@ -10,15 +10,15 @@ namespace agora.Models
         {
             Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
+            PostLikes = new HashSet<Like>();
         }
 
         public string Nickname { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public int? Likes { get; set; }
-
         public virtual PostDraft? PostDraft { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> PostLikes { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }

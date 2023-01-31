@@ -57,14 +57,14 @@ namespace agora.Controllers
                 return Problem("Entity set 'ForumDbContext.Comments'  is null.");
             }
 
-            var userNickname = UserController.GetIdentityClaim(HttpContext);
+            var userNickname = UserController.GetIdentityClaimNickname(HttpContext);
             if (userNickname == null) { return Unauthorized(); }
 
             var newComment = new Comment { Body = comment.Body, PostId = comment.PostId, Autor = userNickname };
             _context.Comments.Add(newComment);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("PostComment", newComment);
+            return CreatedAtAction("PostComment", new CommentDTO { Body = comment.Body, PostId = comment.PostId });
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

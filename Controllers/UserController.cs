@@ -124,14 +124,10 @@ namespace agora.Controllers
             return NoContent();
         }
 
-        public static string GetIdentityClaim(HttpContext httpContext)
+        public static string? GetIdentityClaimNickname(HttpContext httpContext)
         {
             var identity = httpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return null!;
-            }
-            return identity.FindFirst("Nickname")!.Value;
+            return identity?.FindFirst("Nickname")?.Value;
 
         }
         private bool UserExists(string nickname)

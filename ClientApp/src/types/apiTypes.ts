@@ -5,6 +5,8 @@ export interface PostInfoDTO {
   likes: number;
   userId: number;
   autor: string;
+  commentsNumber: number;
+  userDoesLike: boolean;
 }
 
 export interface PostDTO extends PostInfoDTO {

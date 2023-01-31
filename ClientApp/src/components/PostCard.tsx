@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PostInfoDTO } from "../types/apiTypes";
 import PrettyDate from "./iconify/PrettyDate";
 import IconInformation from "./iconify/IconInformation";
+import Like from "./iconify/Like";
 
 // Gradients from https://uigradients.com/
 const gradients = [
@@ -38,7 +39,10 @@ export default function PostCard({ postData }: { postData: PostInfoDTO }) {
       <div className="flex flex-row justify-between text-sm">
         <div className="flex flex-row gap-x-8">
           <PrettyDate date={postData.createdAt} />
-          <IconInformation iconName="thumb_up" information={postData.likes} />
+          <Like
+            liked={(postData as PostInfoDTO).userDoesLike}
+            likes={(postData as PostInfoDTO).likes}
+          />
         </div>
         <IconInformation
           iconName="person"

@@ -11,8 +11,9 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<ForumDbContext>(dbContextOptions =>
-    dbContextOptions.UseMySql(connectionString, new MySqlServerVersion(new Version(8,0,31))));
-builder.Services.AddAuthentication(opt => {
+    dbContextOptions.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 31))));
+builder.Services.AddAuthentication(opt =>
+{
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })

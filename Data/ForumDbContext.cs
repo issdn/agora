@@ -21,6 +21,7 @@ namespace agora.Data
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<PostDraft> PostDrafts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Like> Likes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -100,10 +101,6 @@ namespace agora.Data
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.Likes)
-                    .HasColumnName("likes")
-                    .HasDefaultValueSql("'0'");
-
                 entity.Property(e => e.Title)
                     .HasColumnType("tinytext")
                     .HasColumnName("title");
@@ -162,13 +159,34 @@ namespace agora.Data
                     .HasMaxLength(254)
                     .HasColumnName("email");
 
-                entity.Property(e => e.Likes)
-                    .HasColumnName("likes")
-                    .HasDefaultValueSql("'0'");
-
                 entity.Property(e => e.Password)
                     .HasMaxLength(128)
                     .HasColumnName("password");
+            });
+
+            modelBuilder.Entity<Like>(entity =>
+            {
+                entity.ToTable("like");
+
+                entity.HasKey(e => new { e.PostId, e.UserNickname });
+
+                entity.Property(e => e.UserNickname)
+                    .HasMaxLength(32)
+                    .HasColumnName("user_nickname");
+
+                entity.Property(e => e.PostId)
+                    .HasColumnName("post_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PostLikes)
+                    .HasForeignKey(d => d.UserNickname)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_liking_user");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.PostLikes)
+                    .HasForeignKey(d => d.PostId)
+                    .HasConstraintName("fk_liked_post");
             });
 
             OnModelCreatingPartial(modelBuilder);

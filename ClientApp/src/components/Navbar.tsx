@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
 
-export default function Navbar({ addToast }: any) {
+export default function Navbar() {
   const { token, onLogout } = useAuth() as {
     token: AuthContextType["token"];
     onLogout: AuthContextType["onLogout"];
@@ -14,7 +14,6 @@ export default function Navbar({ addToast }: any) {
         <a href="/">AGORA</a>
       </h1>
       <ul className="flex flex-row text-2xl gap-x-8">
-        <li onClick={() => addToast("TEST", "warning")}>addToast</li>
         {token ? (
           <>
             <li>

@@ -26,6 +26,7 @@ export const useToast = () => {
       { message: message, type: type, timeout: timeout, id: randomToken() },
     ]);
   };
+
   const deleteToast = (id: string) => {
     setToasts(toasts.filter((t) => t.id !== id));
   };
@@ -39,17 +40,17 @@ const useTimeout = () => {
   >([]);
 
   const deleteTimeout = (id: number | NodeJS.Timeout) => {
-    console.log(id);
     setToastTimeouts(toastTimeouts.filter((t) => t !== id));
     clearTimeout(id);
   };
 
-  const addTimeout = useCallback((timeout: number) => {
+  const addTimeout = (timeout: number) => {
+    console.log(timeout);
     const id = setTimeout(() => {
       deleteTimeout(id);
     }, timeout);
     return id;
-  }, []);
+  };
 
   return { addTimeout, deleteTimeout };
 };

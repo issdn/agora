@@ -21,7 +21,7 @@ export default function App() {
       return res;
     },
     (error) => {
-      addToast(error, "warning");
+      addToast(error.message, "warning");
       return Promise.reject(error);
     }
   );

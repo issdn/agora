@@ -5,14 +5,14 @@ import { ObjectSchema } from "yup";
 import { FieldsType } from "../types/appTypes";
 
 type BaseFormPropsType = {
-  title: string
-  initialValues: Record<string, string>
-  fields: FieldsType
-  validationSchema: ObjectSchema<any>
-  submitFunc: (values: any) => Promise<void>
-  submitText: string
-  children?: ReactNode
-}
+  title: string;
+  initialValues: Record<string, string>;
+  fields: FieldsType;
+  validationSchema: ObjectSchema<any>;
+  submitFunc: (values: any) => Promise<void>;
+  submitText: string;
+  children?: ReactNode;
+};
 
 export default function BaseForm({
   title,
@@ -24,8 +24,8 @@ export default function BaseForm({
   children,
 }: BaseFormPropsType) {
   return (
-    <div className="flex flex-row h-full items-center justify-center pt-12 font-inconsolata text-xl">
-      <div className="border-4 border-black rounded-xl mt-16 flex flex-col items-center gap-y-8 py-8 px-12 w-[max(35%,150px)]">
+    <div className="flex flex-row h-full w-full items-center justify-center pt-12 font-inconsolata text-xl p-48">
+      <div className="border-4 w-full border-black rounded-xl mt-16 flex flex-col items-center gap-y-8 py-8 px-12">
         <h1 className="font-karla text-2xl font-bold">{title}</h1>
         <Formik
           initialValues={initialValues}
@@ -59,9 +59,7 @@ export default function BaseForm({
                 ))}
               </div>
               <div className="flex flex-col w-full gap-y-2">
-                <Button
-                  rest={{ type: "submit" }}
-                >
+                <Button rest={{ type: "submit" }}>
                   {submitText ? submitText : "Submit"}
                 </Button>
                 {children}

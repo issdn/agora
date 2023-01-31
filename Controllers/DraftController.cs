@@ -32,7 +32,7 @@ namespace agora.Controllers
         [HttpGet]
         public async Task<ActionResult<PostDraft>> GetDraft()
         {
-            var userNickname = UserController.GetIdentityClaim(HttpContext);
+            var userNickname = UserController.GetIdentityClaimNickname(HttpContext);
             if (userNickname == null) { return Unauthorized(); }
 
             var databaseDraft = _context.PostDrafts.Where(d => d.Autor == userNickname).FirstOrDefault();
@@ -51,7 +51,7 @@ namespace agora.Controllers
         [HttpPut]
         public async Task<IActionResult> SaveDraft(PostDraftDTO draft)
         {
-            var userNickname = UserController.GetIdentityClaim(HttpContext);
+            var userNickname = UserController.GetIdentityClaimNickname(HttpContext);
             if (userNickname == null) { return Unauthorized(); }
 
             var databaseDraft = _context.PostDrafts.Where(d => d.Autor == userNickname).FirstOrDefault();
