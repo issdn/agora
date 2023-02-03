@@ -22,6 +22,7 @@ namespace agora.Data
         public virtual DbSet<PostDraft> PostDrafts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Like> Likes { get; set; } = null!;
+        public virtual DbSet<Follow> Follows { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -187,6 +188,32 @@ namespace agora.Data
                     .WithMany(p => p.PostLikes)
                     .HasForeignKey(d => d.PostId)
                     .HasConstraintName("fk_liked_post");
+            });
+
+            modelBuilder.Entity<Follow>(entity =>
+            {
+                entity.ToTable("follow");
+
+                entity.HasKey(e => new { e.FollowerUserNickname, e.FollowedUserNickname });
+
+                entity.Property(e => e.FollowedUserNickname)
+                    .HasMaxLength(32)
+                    .HasColumnName("followed_user_nickname");
+
+                entity.Property(e => e.FollowerUserNickname)
+                    .HasMaxLength(32)
+                    .HasColumnName("follower_user_nickname");
+
+                entity.HasOne(d => d.FollowedUser)
+                    .WithMany(p => p.Followed)
+                    .HasForeignKey(d => d.FollowedUserNickname)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_followed_user_nickname");
+
+                entity.HasOne(d => d.FollowerUser)
+                    .WithMany(p => p.Followers)
+                    .HasForeignKey(d => d.FollowerUserNickname)
+                    .HasConstraintName("fk_follower_user_nickname");
             });
 
             OnModelCreatingPartial(modelBuilder);

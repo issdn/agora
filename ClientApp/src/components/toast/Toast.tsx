@@ -10,13 +10,9 @@ const buttonStyleTypes = {
 
 export default function Toast({
   info,
-  deleteTimeout,
-  addTimeout,
   deleteToast,
 }: {
   info: ToastType;
-  deleteTimeout: any;
-  addTimeout: any;
   deleteToast: any;
 }) {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | number | null>(
@@ -24,8 +20,11 @@ export default function Toast({
   );
 
   useEffect(() => {
-    const id = addTimeout();
-    setTimeoutId(id);
+    const _timeoutId = setTimeout(() => {
+      deleteToast(info.id);
+      clearTimeout(timeoutId as number);
+    }, info.timeout);
+    setTimeoutId(_timeoutId);
   }, []);
 
   return (
@@ -47,8 +46,8 @@ export default function Toast({
         >
           <Icon
             onClick={() => {
-              deleteTimeout(timeoutId);
               deleteToast(info.id);
+              clearTimeout(timeoutId as number);
             }}
             iconName="close"
             styles="text-3xl text-white"

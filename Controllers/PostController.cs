@@ -49,8 +49,32 @@ namespace agora.Controllers
                 }).ToListAsync();
         }
 
+        [HttpGet("user/{userNickname}")]
+        public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetAllUserPosts(string userNickname)
+        {
+            if (_context.Posts == null)
+            {
+                return NotFound();
+            }
+
+            var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+
+            return await _context
+                .Posts
+                .Where(p => p.Autor == userNickname)
+                .Select(p => new GetPostsDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    CreatedAt = p.CreatedAt,
+                    Likes = p.PostLikes.Count(),
+                    Autor = p.Autor,
+                    UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
+                }).ToListAsync();
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<GetSinglePostDTO>> GetPostsByUserId(int id)
+        public async Task<ActionResult<GetSinglePostDTO>> GetPostById(int id)
         {
             if (_context.Posts == null)
             {

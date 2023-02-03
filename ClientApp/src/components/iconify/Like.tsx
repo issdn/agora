@@ -10,7 +10,7 @@ export default function Like({
   likes: number;
 }) {
   return (
-    <div className="flex flex-row gap-x-1 text-xl items-center">
+    <div className="flex flex-row gap-x-1 items-center">
       {liked ? (
         <ThumbUpIcon fontSize="inherit" />
       ) : (

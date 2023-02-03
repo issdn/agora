@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PostInfoDTO } from "../types/apiTypes";
 import PrettyDate from "./iconify/PrettyDate";
-import IconInformation from "./iconify/IconInformation";
 import Like from "./iconify/Like";
+import UserButton from "./iconify/UserButton";
 
 // Gradients from https://uigradients.com/
 const gradients = [
@@ -27,29 +27,41 @@ export default function PostCard({ postData }: { postData: PostInfoDTO }) {
   const randomGradient = getRandomGradient();
   const navigate = useNavigate();
 
+  const handleGotoPost = () => {
+    navigate(`/post/${postData.id}`);
+  };
+
   return (
-    <div
-      onClick={() => navigate(`/post/${postData.id}`)}
-      className="cursor-pointer p-4 text-white flex flex-col gap-y-4 rounded-xl"
-      style={{
-        background: `linear-gradient(90deg, ${randomGradient[0]}, ${randomGradient[1]})`,
-      }}
-    >
-      <h1 className="font-bold text-2xl">{postData.title}</h1>
-      <div className="flex flex-row justify-between text-sm">
-        <div className="flex flex-row gap-x-8">
-          <PrettyDate date={postData.createdAt} />
-          <Like
-            liked={(postData as PostInfoDTO).userDoesLike}
-            likes={(postData as PostInfoDTO).likes}
+    <div className="p-4 text-white relative">
+      <div className="flex flex-col gap-y-4 relative">
+        <h1
+          className="font-bold text-2xl z-10 capitalize cursor-pointer"
+          onClick={handleGotoPost}
+        >
+          {postData.title}
+        </h1>
+        <div className="flex flex-row justify-between text-lg">
+          <div className="flex flex-row gap-x-8 z-10">
+            <PrettyDate date={postData.createdAt} />
+            <Like
+              liked={(postData as PostInfoDTO).userDoesLike}
+              likes={(postData as PostInfoDTO).likes}
+            />
+          </div>
+          <UserButton
+            styles="z-10 cursor-pointer"
+            user={postData.autor}
+            type="tag"
           />
         </div>
-        <IconInformation
-          iconName="person"
-          information={postData.autor}
-          type="tag"
-        />
       </div>
+      <div
+        onClick={handleGotoPost}
+        className="absolute w-full h-full top-0 left-0 cursor-pointer rounded-xl z-0"
+        style={{
+          background: `linear-gradient(90deg, ${randomGradient[0]}, ${randomGradient[1]})`,
+        }}
+      />
     </div>
   );
 }

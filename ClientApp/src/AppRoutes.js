@@ -3,6 +3,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import PostEditor from "./components/PostEditor";
 import Post from "./components/Post";
+import User from "./components/user/User";
 
 const AppRoutes = [
   {
@@ -25,6 +26,10 @@ const AppRoutes = [
   {
     path: "/post/:id",
     element: <Post />,
+  },
+  {
+    path: "/user/:nickname",
+    element: <User />,
   },
 ];
 

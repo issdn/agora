@@ -10,6 +10,7 @@ import { GetCommentDTO } from "../types/apiTypes";
 import { AuthContextType } from "../types/appTypes";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import LikeButton from "./iconify/LikeButton";
+import UserButton from "./iconify/UserButton";
 
 const sizes = ["sm", "base", "lg", "xl", "2xl"];
 
@@ -73,11 +74,8 @@ export default function Post() {
           {(post as PostDTO).userDoesLike}
         </h1>
         <div className="flex flex-row justify-between border-black">
-          <div className="flex flex-row gap-x-8">
-            <IconInformation
-              iconName="person"
-              information={(post as PostDTO).autor}
-            />
+          <div className="flex flex-row gap-x-8 text-lg">
+            <UserButton user={(post as PostDTO).autor} />
             <PrettyDate date={(post as PostDTO).createdAt} />
             <LikeButton
               liked={(post as PostDTO).userDoesLike}
