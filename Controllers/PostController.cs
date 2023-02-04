@@ -66,7 +66,7 @@ namespace agora.Controllers
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var userNickname = identity?.FindFirst("nickname")?.Value;
 
-            var userDoesLike = _context.Likes.Any(l => l.UserNickname == userNickname);
+            var userDoesLike = _context.Likes.Any(l => l.PostId == id && l.UserNickname == userNickname);
             var numberOfComments = _context.Comments.Where(u => u.PostId == id).Count();
 
             return new GetSinglePostDTO

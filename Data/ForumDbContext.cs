@@ -106,7 +106,7 @@ namespace agora.Data
                     .HasColumnType("tinytext")
                     .HasColumnName("title");
 
-                entity.HasOne(d => d.AutorNavigation)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Posts)
                     .HasForeignKey(d => d.Autor)
                     .OnDelete(DeleteBehavior.ClientSetNull)

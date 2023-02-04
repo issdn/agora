@@ -24,8 +24,27 @@ namespace agora.Controllers
             _context = context;
         }
 
-        [HttpGet("{userNickname}")]
-        public async Task<ActionResult<ICollection<Follow>>> GetUserFollowsByTheirNickname(string userNickname)
+        [AllowAnonymous]
+        [HttpGet("follows/{userNickname}")]
+        public async Task<ActionResult<string[]>> GetUserFollowsByTheirNickname(string userNickname)
+        {
+            if (_context.Follows == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.Where(u => u.Nickname == userNickname).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return await _context.Follows.Where(f => f.FollowerUserNickname == userNickname).Select(u => u.FollowedUserNickname).ToArrayAsync();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("followers/{userNickname}")]
+        public async Task<ActionResult<string[]>> GetUserFollowersByTheirNickname(string userNickname)
         {
             if (_context.Follows == null)
             {
@@ -39,7 +58,7 @@ namespace agora.Controllers
                 return NotFound();
             }
 
-            return Ok(user.Followed.ToList());
+            return await _context.Follows.Where(f => f.FollowedUserNickname == userNickname).Select(u => u.FollowerUserNickname).ToArrayAsync();
         }
 
         [HttpPost("{userNickname}")]
@@ -47,7 +66,7 @@ namespace agora.Controllers
         {
             if (_context.Follows == null)
             {
-                return Problem("Entity set 'ForumDbContext.Follows'  is null.");
+                return Problem("Entity set 'ForumDbContext.Follows' is null.");
             }
             var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
             if (sessionUserNickname == null) { return Unauthorized(); }

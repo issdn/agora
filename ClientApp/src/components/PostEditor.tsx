@@ -1,9 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import Button from "./Button";
-import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { axiosInstance } from "../api/axiosInterceptors";
 import BigInput from "./BigInput";
-import { AuthContextType } from "../types/appTypes";
 
 const TEST_TITLE = "What is Lorem Ipsum?";
 const TEST_BODY =

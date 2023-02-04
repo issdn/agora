@@ -3,12 +3,23 @@ import { axiosInstance } from "../../api/axiosInterceptors";
 import { PostInfoDTO } from "../../types/apiTypes";
 import PostsListBase from "./PostsListBase";
 
-export default function PostsList({ url }: { url: string }) {
+export default function ClosablePostsList({
+  url,
+  isOpen,
+}: {
+  url: string;
+  userNickname: string;
+  isOpen: boolean;
+}) {
   const [posts, setPosts] = useState<PostInfoDTO[]>([]);
 
   useEffect(() => {
     axiosInstance.get(url).then((res) => setPosts(res.data));
   }, [url]);
 
-  return <PostsListBase posts={posts} />;
+  return (
+    <div className="flex flex-col gap-y-6">
+      {isOpen ? <PostsListBase posts={posts} dontShowAuthor /> : null}
+    </div>
+  );
 }

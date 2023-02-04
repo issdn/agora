@@ -79,12 +79,12 @@ export default function CommentsList({
         <Button
           onClick={handleCommentsClick}
           type="clear"
-          styles="w-fit flex flex-row text-2xl"
+          styles="w-fit flex flex-row text-2xl items-center"
         >
           <p className="text-xl">Comments ({numberOfComments})</p>
           <ExpandMoreOutlinedIcon
             fontSize="inherit"
-            style={{ transform: commentsOpen ? "rotate(90deg)" : "" }}
+            style={{ transform: commentsOpen ? "rotate(180deg)" : "" }}
           />
         </Button>
       )}

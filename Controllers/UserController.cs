@@ -27,7 +27,6 @@ namespace agora.Controllers
             _context = context;
         }
 
-        // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
@@ -85,15 +84,15 @@ namespace agora.Controllers
             return Ok(new GetUserInfoDTO
             {
                 Nickname = user.Nickname,
-                NumberOfLikes = user.Posts.Sum(p => p.PostLikes.Count()),
-                NumberOfFollowed = user.Followed.Count(),
-                NumberOfFollowers = user.Followers.Count(),
-                UserDoesFollow = user.Followers.Any(f => f.FollowerUserNickname == user.Nickname)
+                NumberOfLikes = _context.Posts.Where(p => p.Autor == user.Nickname).Sum(p => p.PostLikes.Count()),
+                NumberOfFollowed = _context.Follows.Where(f => f.FollowerUserNickname == user.Nickname).Count(),
+                NumberOfFollowers = _context.Follows.Where(f => f.FollowedUserNickname == user.Nickname).Count(),
+                UserDoesFollow = _context.Follows.Any(f => f.FollowerUserNickname == currUserNickname),
+                NumberOfPosts = _context.Posts.Where(p => p.Autor == user.Nickname).Count()
             });
         }
 
         // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(string nickname, User user)
         {

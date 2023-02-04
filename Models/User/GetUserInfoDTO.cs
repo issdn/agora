@@ -7,5 +7,6 @@ namespace agora.Models
         public int NumberOfFollowers { get; set; }
         public int NumberOfFollowed { get; set; }
         public int NumberOfLikes { get; set; }
+        public int NumberOfPosts { get; set; }
     }
 }

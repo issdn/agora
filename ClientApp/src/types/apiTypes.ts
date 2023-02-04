@@ -43,4 +43,5 @@ export type UserInfoDTO = {
   numberOfFollowed: number;
   numberOfLikes: number;
   userDoesFollow: boolean;
+  numberOfPosts: number;
 };
