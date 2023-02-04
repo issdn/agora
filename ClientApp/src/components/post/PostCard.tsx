@@ -4,6 +4,8 @@ import { PostInfoDTO } from "../../types/apiTypes";
 import PrettyDate from "../iconify/PrettyDate";
 import Like from "../iconify/Like";
 import UserButton from "../iconify/UserButton";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { useAuth } from "../../api/api-authentication/AuthenticationService";
 
 // Gradients from https://uigradients.com/
 const gradients = [
@@ -30,6 +32,7 @@ export default function PostCard({
   postData: PostInfoDTO;
   dontShowAuthor?: boolean;
 }) {
+  const { nickname } = useAuth() as { nickname: string };
   const randomGradient = getRandomGradient();
   const navigate = useNavigate();
 
@@ -40,27 +43,33 @@ export default function PostCard({
   return (
     <div className="p-4 text-white relative">
       <div className="flex flex-col gap-y-4 relative">
-        <h1
-          className="font-bold text-2xl z-10 capitalize cursor-pointer"
-          onClick={handleGotoPost}
-        >
-          {postData.title}
-        </h1>
+        <div className="flex flex-row items-center ">
+          <h1
+            className="font-bold text-2xl z-10 capitalize cursor-pointer w-full break-words"
+            onClick={handleGotoPost}
+          >
+            {postData.title}
+          </h1>
+          {nickname === postData.autor ? (
+            <div
+              onClick={() => navigate("editpost/" + postData.id)}
+              className="text-xl z-10 cursor-pointer bg-slate-700/25 p-1.5 hover:bg-slate-500/25 text-white rounded-lg flex flex-row justify-center items-center"
+            >
+              <EditOutlinedIcon fontSize="inherit" />
+            </div>
+          ) : null}
+        </div>
         <div className="flex flex-row justify-between text-lg">
           <div className="flex flex-row gap-x-8 z-10">
-            <PrettyDate date={postData.createdAt} />
+            {!dontShowAuthor ? (
+              <UserButton styles="z-10 cursor-pointer" user={postData.autor} />
+            ) : null}
             <Like
               liked={(postData as PostInfoDTO).userDoesLike}
               likes={(postData as PostInfoDTO).likes}
             />
+            <PrettyDate date={postData.createdAt} />
           </div>
-          {!dontShowAuthor ? (
-            <UserButton
-              styles="z-10 cursor-pointer"
-              user={postData.autor}
-              type="tag"
-            />
-          ) : null}
         </div>
       </div>
       <div

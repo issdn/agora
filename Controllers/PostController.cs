@@ -91,14 +91,32 @@ namespace agora.Controllers
             }
 
             var userNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            if (userNickname == null) { return Problem("Server error. identity.Nickname is null."); };
+            if (userNickname == null) { return Unauthorized(); };
             Post newPost = new Post();
             newPost.Body = post.Body;
             newPost.Title = post.Title;
             newPost.Autor = userNickname;
             _context.Posts.Add(newPost);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("CreatePost", post);
+            return Ok();
+        }
+
+        [HttpPut("edit/{id}")]
+        public async Task<ActionResult<Post>> EditPost(PostDTO post, int id)
+        {
+            if (_context.Posts == null)
+            {
+                return Problem("Entity set 'UserDbContext.Posts' is null.");
+            }
+
+            var userNickname = UserController.GetIdentityClaimNickname(HttpContext);
+            if (userNickname == null) { return Unauthorized(); };
+            var dbPost = await _context.Posts.Where(p => p.Id == id).FirstOrDefaultAsync();
+            if (dbPost == null) { return NotFound(); }
+            dbPost.Title = post.Title;
+            dbPost.Body = post.Body;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPost("like/{postId}")]

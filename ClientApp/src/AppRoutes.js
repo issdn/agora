@@ -1,9 +1,10 @@
 import { Home } from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import PostEditor from "./components/PostEditor";
+import NewPost from "./components/post/NewPost";
 import Post from "./components/post/Post";
 import User from "./components/user/User";
+import EditPost from "./components/post/EditPost";
 
 const AppRoutes = [
   {
@@ -13,7 +14,7 @@ const AppRoutes = [
   {
     requireAuth: true,
     path: "/newpost",
-    element: <PostEditor />,
+    element: <NewPost />,
   },
   {
     path: "/register",
@@ -30,6 +31,10 @@ const AppRoutes = [
   {
     path: "/user/:userNickname",
     element: <User />,
+  },
+  {
+    path: "/editpost/:id",
+    element: <EditPost />,
   },
 ];
 

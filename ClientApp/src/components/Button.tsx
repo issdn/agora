@@ -12,18 +12,18 @@ export default function Button({
   onClick,
   type = "primary",
   styles,
-  rest,
+  attributes,
 }: {
   children: any;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   type?: types;
   styles?: string;
-  rest?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  attributes?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 }) {
   return (
     <button
       onClick={onClick}
-      {...rest}
+      {...attributes}
       className={`py-2 text-xl transition duration-400 ${styleByType[type]} ${styles}`}
     >
       {children}

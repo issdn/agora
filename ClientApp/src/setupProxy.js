@@ -20,6 +20,7 @@ const context = [
   "/api/follow",
   "/api/user",
   "/api/user/posts",
+  "/api/post/edit",
 ];
 
 module.exports = function (app) {

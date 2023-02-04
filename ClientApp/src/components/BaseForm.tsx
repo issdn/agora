@@ -59,7 +59,7 @@ export default function BaseForm({
                 ))}
               </div>
               <div className="flex flex-col w-full gap-y-2">
-                <Button rest={{ type: "submit" }}>
+                <Button attributes={{ type: "submit" }}>
                   {submitText ? submitText : "Submit"}
                 </Button>
                 {children}

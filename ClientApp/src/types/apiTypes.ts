@@ -13,6 +13,11 @@ export interface PostDTO extends PostInfoDTO {
   body: string;
 }
 
+export type SimplePostDTO = {
+  title: string;
+  body: string;
+};
+
 export type UserLoginDTO = {
   nickname: string;
   password: string;

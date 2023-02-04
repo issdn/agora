@@ -7,7 +7,7 @@ export default function BigInput({
   attributes,
 }: {
   body: string;
-  setBody: React.Dispatch<React.SetStateAction<string>>;
+  setBody: React.Dispatch<React.SetStateAction<any>>;
   styles?: string;
   attributes?: AllHTMLAttributes<HTMLTextAreaElement>;
 }) {
