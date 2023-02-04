@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { PostInfoDTO } from "../types/apiTypes";
-import PrettyDate from "./iconify/PrettyDate";
-import Like from "./iconify/Like";
-import UserButton from "./iconify/UserButton";
+import { PostInfoDTO } from "../../types/apiTypes";
+import PrettyDate from "../iconify/PrettyDate";
+import Like from "../iconify/Like";
+import UserButton from "../iconify/UserButton";
 
 // Gradients from https://uigradients.com/
 const gradients = [
@@ -23,7 +23,13 @@ const getRandomGradient = () => {
   return gradients[Math.floor(Math.random() * gradients.length)];
 };
 
-export default function PostCard({ postData }: { postData: PostInfoDTO }) {
+export default function PostCard({
+  postData,
+  dontShowAuthor = false,
+}: {
+  postData: PostInfoDTO;
+  dontShowAuthor?: boolean;
+}) {
   const randomGradient = getRandomGradient();
   const navigate = useNavigate();
 
@@ -48,11 +54,13 @@ export default function PostCard({ postData }: { postData: PostInfoDTO }) {
               likes={(postData as PostInfoDTO).likes}
             />
           </div>
-          <UserButton
-            styles="z-10 cursor-pointer"
-            user={postData.autor}
-            type="tag"
-          />
+          {!dontShowAuthor ? (
+            <UserButton
+              styles="z-10 cursor-pointer"
+              user={postData.autor}
+              type="tag"
+            />
+          ) : null}
         </div>
       </div>
       <div

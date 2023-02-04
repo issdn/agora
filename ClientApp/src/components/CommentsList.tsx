@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { GetCommentDTO } from "../types/apiTypes";
 import { prettyDate } from "../scripts/utils";
 import Button from "./Button";
-import Icon from "./iconify/Icon";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 
 export default function CommentsList({
   postId,
@@ -60,10 +61,9 @@ export default function CommentsList({
           <p>{c.autor}</p>
           <p>{prettyDate(c.createdAt)}</p>
           {nickname === c.autor ? (
-            <Icon
+            <DeleteForeverOutlinedIcon
               onClick={() => deleteComment(c.id)}
-              iconName="delete_forever"
-              styles="cursor-pointer"
+              style={{ cursor: "pointer" }}
             />
           ) : null}
         </div>
@@ -73,17 +73,21 @@ export default function CommentsList({
 
   return (
     <div className="flex flex-col gap-y-4">
-      <Button
-        onClick={handleCommentsClick}
-        type="clear"
-        styles="w-fit flex flex-row"
-      >
-        <p>Comments ({numberOfComments})</p>
-        <Icon
-          iconName="expand_more"
-          styles={`text-2xl ${commentsOpen ? "rotate-180" : ""}`}
-        />
-      </Button>
+      {numberOfComments === 0 ? (
+        <p className="text-xl">No comments</p>
+      ) : (
+        <Button
+          onClick={handleCommentsClick}
+          type="clear"
+          styles="w-fit flex flex-row text-2xl"
+        >
+          <p className="text-xl">Comments ({numberOfComments})</p>
+          <ExpandMoreOutlinedIcon
+            fontSize="inherit"
+            style={{ transform: commentsOpen ? "rotate(90deg)" : "" }}
+          />
+        </Button>
+      )}
       {commentsOpen ? renderComments() : null}
     </div>
   );

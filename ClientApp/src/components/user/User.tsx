@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { PostInfoDTO } from "../../types/apiTypes";
-import { axiosInstance } from "../../api/axiosInterceptors";
+import React from "react";
+import { useParams } from "react-router-dom";
+import PostsList from "../post/PostsList";
+import UserProfile from "./UserProfile";
 
 export default function User() {
-  const [posts, setPosts] = useState<PostInfoDTO[]>([]);
+  let { userNickname } = useParams();
 
-  useEffect(() => {
-    axiosInstance.get("");
-  });
-
-  return <div>User</div>;
+  return (
+    <div className="flex flex-col gap-y-8">
+      <UserProfile userNickname={userNickname as string} />
+      <div className="flex flex-col gap-y-6">
+        <p className="text-xl border-b border-black">{userNickname} posts:</p>
+        <PostsList url={"api/user/posts/" + userNickname} dontShowAuthor />
+      </div>
+    </div>
+  );
 }

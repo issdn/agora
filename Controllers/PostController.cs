@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 namespace agora.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -24,6 +25,7 @@ namespace agora.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetPosts()
         {
@@ -49,30 +51,7 @@ namespace agora.Controllers
                 }).ToListAsync();
         }
 
-        [HttpGet("user/{userNickname}")]
-        public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetAllUserPosts(string userNickname)
-        {
-            if (_context.Posts == null)
-            {
-                return NotFound();
-            }
-
-            var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-
-            return await _context
-                .Posts
-                .Where(p => p.Autor == userNickname)
-                .Select(p => new GetPostsDTO
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    CreatedAt = p.CreatedAt,
-                    Likes = p.PostLikes.Count(),
-                    Autor = p.Autor,
-                    UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
-                }).ToListAsync();
-        }
-
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetSinglePostDTO>> GetPostById(int id)
         {
@@ -103,7 +82,6 @@ namespace agora.Controllers
             };
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("createpost")]
         public async Task<ActionResult<Post>> CreatePost(PostDTO post)
         {
@@ -123,7 +101,6 @@ namespace agora.Controllers
             return CreatedAtAction("CreatePost", post);
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("like/{postId}")]
         public async Task<ActionResult> Like(int postId)
         {
@@ -146,7 +123,6 @@ namespace agora.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("draft/save")]
         public async Task<ActionResult<PostDraftDTO>> SaveDraft(PostDraftDTO postDraft)
         {

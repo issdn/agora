@@ -2,7 +2,7 @@ import { Home } from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import PostEditor from "./components/PostEditor";
-import Post from "./components/Post";
+import Post from "./components/post/Post";
 import User from "./components/user/User";
 
 const AppRoutes = [
@@ -28,7 +28,7 @@ const AppRoutes = [
     element: <Post />,
   },
   {
-    path: "/user/:nickname",
+    path: "/user/:userNickname",
     element: <User />,
   },
 ];

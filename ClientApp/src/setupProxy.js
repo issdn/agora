@@ -10,14 +10,16 @@ const target = env.ASPNETCORE_HTTPS_PORT
 const context = [
   "/api",
   "/api/auth/register",
-  "api/post",
-  "api/auth/login",
-  "api/postdraft",
-  "api/post/createpost",
-  "api/comment",
-  "api/post/like",
-  "api/post/dislike",
-  "api/follow",
+  "/api/post",
+  "/api/auth/login",
+  "/api/postdraft",
+  "/api/post/createpost",
+  "/api/comment",
+  "/api/post/like",
+  "/api/post/dislike",
+  "/api/follow",
+  "/api/user",
+  "/api/user/posts",
 ];
 
 module.exports = function (app) {

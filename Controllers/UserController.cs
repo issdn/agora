@@ -39,37 +39,57 @@ namespace agora.Controllers
         }
 
 
-        // GET: api/User/5
-        [HttpGet("{nickname}")]
-        public async Task<ActionResult<User>> GetUser(string nickname)
+        [AllowAnonymous]
+        [HttpGet("posts/{nickname}")]
+        public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetAllUserPosts(string nickname)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-            if (identity != null)
+            if (_context.Posts == null)
             {
-                var jwtNickname = identity.FindFirst("Nickname")?.Value;
-                if (jwtNickname != nickname)
+                return NotFound();
+            }
+
+            var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+
+            return await _context
+                .Posts
+                .Where(p => p.Autor == nickname)
+                .Select(p => new GetPostsDTO
                 {
-                    return Unauthorized();
-                }
-            }
-            else
-            {
-                return Unauthorized();
-            }
+                    Id = p.Id,
+                    Title = p.Title,
+                    CreatedAt = p.CreatedAt,
+                    Likes = p.PostLikes.Count(),
+                    Autor = p.Autor,
+                    UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
+                }).ToListAsync();
+        }
 
-            if (_context.Users == null)
+        [AllowAnonymous]
+        [HttpGet("{nickname}")]
+        public async Task<ActionResult<IEnumerable<GetUserInfoDTO>>> GetUserInfo(string nickname)
+        {
+            if (_context.Posts == null)
             {
                 return NotFound();
             }
-            var user = await _context.Users.FindAsync(nickname);
 
-            if (user == null)
+            var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+
+            var user = await _context
+                .Users
+                .Where(u => u.Nickname == nickname)
+                .FirstOrDefaultAsync();
+
+            if (user == null) { return NotFound(); }
+
+            return Ok(new GetUserInfoDTO
             {
-                return NotFound();
-            }
-
-            return user;
+                Nickname = user.Nickname,
+                NumberOfLikes = user.Posts.Sum(p => p.PostLikes.Count()),
+                NumberOfFollowed = user.Followed.Count(),
+                NumberOfFollowers = user.Followers.Count(),
+                UserDoesFollow = user.Followers.Any(f => f.FollowerUserNickname == user.Nickname)
+            });
         }
 
         // PUT: api/User/5

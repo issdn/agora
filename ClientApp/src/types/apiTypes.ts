@@ -36,3 +36,11 @@ export type GetCommentDTO = {
   postId: number;
   autor: string;
 };
+
+export type UserInfoDTO = {
+  nickname: string;
+  numberOfFollowers: number;
+  numberOfFollowed: number;
+  numberOfLikes: number;
+  userDoesFollow: boolean;
+};

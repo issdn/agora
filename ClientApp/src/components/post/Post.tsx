@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../api/axiosInterceptors";
+import { axiosInstance } from "../../api/axiosInterceptors";
 import { useParams } from "react-router-dom";
-import { PostDTO } from "../types/apiTypes";
-import PrettyDate from "./iconify/PrettyDate";
-import IconInformation from "./iconify/IconInformation";
-import CommentField from "./CommentField";
-import CommentsList from "./CommentsList";
-import { GetCommentDTO } from "../types/apiTypes";
-import { AuthContextType } from "../types/appTypes";
-import { useAuth } from "../api/api-authentication/AuthenticationService";
-import LikeButton from "./iconify/LikeButton";
-import UserButton from "./iconify/UserButton";
+import { PostDTO } from "../../types/apiTypes";
+import PrettyDate from "../iconify/PrettyDate";
+import CommentField from "../CommentField";
+import CommentsList from "../CommentsList";
+import { GetCommentDTO } from "../../types/apiTypes";
+import { AuthContextType } from "../../types/appTypes";
+import { useAuth } from "../../api/api-authentication/AuthenticationService";
+import LikeButton from "../iconify/LikeButton";
+import UserButton from "../iconify/UserButton";
 
-const sizes = ["sm", "base", "lg", "xl", "2xl"];
+const sizes = ["base", "lg", "xl", "2xl", "3xl", "4xl"];
 
 export default function Post() {
   const { token } = useAuth() as {

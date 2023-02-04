@@ -42,35 +42,35 @@ namespace agora.Controllers
             return Ok(user.Followed.ToList());
         }
 
-        [HttpPost]
+        [HttpPost("{userNickname}")]
         public async Task<ActionResult<Follow>> FollowUser(String userNickname)
         {
             if (_context.Follows == null)
             {
                 return Problem("Entity set 'ForumDbContext.Follows'  is null.");
             }
-            var serssionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            if (serssionUserNickname == null) { return Unauthorized(); }
+            var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+            if (sessionUserNickname == null) { return Unauthorized(); }
 
-            var follow = new Follow { FollowerUserNickname = serssionUserNickname, FollowedUserNickname = userNickname };
-            _context.Follows.Add(follow);
-            try
+            if (sessionUserNickname == userNickname) { return BadRequest(); }
+
+            var probablyExistingFollow = await _context.Follows
+            .Where(f => f.FollowedUserNickname == userNickname && f.FollowerUserNickname == sessionUserNickname)
+            .FirstOrDefaultAsync();
+
+            if (probablyExistingFollow != null)
             {
-                await _context.SaveChangesAsync();
+                _context.Follows.Remove(probablyExistingFollow);
             }
-            catch (DbUpdateException)
+            else
             {
-                if (FollowExists(serssionUserNickname, userNickname))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                var follow = new Follow { FollowerUserNickname = sessionUserNickname, FollowedUserNickname = userNickname };
+                _context.Follows.Add(follow);
             }
 
-            return CreatedAtAction("FollowUser", follow);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpDelete("{userNickname}")]
@@ -81,10 +81,10 @@ namespace agora.Controllers
                 return NotFound();
             }
 
-            var serssionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            if (serssionUserNickname == null) { return Unauthorized(); }
+            var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+            if (sessionUserNickname == null) { return Unauthorized(); }
 
-            var follow = await _context.Follows.Where(f => f.FollowedUserNickname == serssionUserNickname).FirstOrDefaultAsync();
+            var follow = await _context.Follows.Where(f => f.FollowedUserNickname == sessionUserNickname).FirstOrDefaultAsync();
             if (follow == null)
             {
                 return NotFound();

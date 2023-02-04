@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ToastColorType, ToastType } from "./ToastContainer";
-import Icon from "../iconify/Icon";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 const toastStyleTypes = { success: "bg-emerald-500", warning: "bg-red-500" };
 const buttonStyleTypes = {
@@ -42,15 +42,14 @@ export default function Toast({
         <div
           className={`${
             buttonStyleTypes[info.type as ToastColorType]
-          } cursor-pointer leading-3 px-1 rounded-md`}
+          } cursor-pointer leading-3 px-1 rounded-md text-3xl text-white`}
         >
-          <Icon
+          <CloseOutlinedIcon
             onClick={() => {
               deleteToast(info.id);
               clearTimeout(timeoutId as number);
             }}
-            iconName="close"
-            styles="text-3xl text-white"
+            fontSize="inherit"
           />
         </div>
       </div>

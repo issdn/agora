@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setNickname(result.data.nickname);
       localStorage.setItem("token", result.data.token);
       localStorage.setItem("nickname", result.data.nickname);
-      navigate("/newpost");
+      navigate("/");
     });
   };
 
