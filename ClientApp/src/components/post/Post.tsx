@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { axiosInstance } from "../../api/axiosInterceptors";
 import { useParams } from "react-router-dom";
 import { PostDTO } from "../../types/apiTypes";
@@ -6,14 +12,14 @@ import PrettyDate from "../iconify/PrettyDate";
 import CommentField from "../CommentField";
 import CommentsList from "../CommentsList";
 import { GetCommentDTO } from "../../types/apiTypes";
-import { AuthContextType } from "../../types/appTypes";
+import { AddToastFuncType, AuthContextType } from "../../types/appTypes";
 import { useAuth } from "../../api/api-authentication/AuthenticationService";
 import LikeButton from "../iconify/LikeButton";
 import UserButton from "../iconify/UserButton";
 
 const sizes = ["base", "lg", "xl", "2xl", "3xl", "4xl"];
 
-export default function Post() {
+export default function Post({ addToast }: { addToast: AddToastFuncType }) {
   const { token } = useAuth() as {
     token: AuthContextType["token"];
     nickname: string;
@@ -26,6 +32,10 @@ export default function Post() {
   let { id } = useParams();
 
   const addLike = async () => {
+    if (!token) {
+      addToast("You must be logged in to like!", "warning");
+      return;
+    }
     await axiosInstance
       .post("api/post/like/" + (post as PostDTO).id)
       .then((res) => {

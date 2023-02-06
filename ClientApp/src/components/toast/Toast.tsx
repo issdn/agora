@@ -1,6 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { ToastColorType, ToastType } from "./ToastContainer";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+
+function useTimeout(callback: () => void, delay: number) {
+  const timeoutRef = useRef<number | null>(null);
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    return () => window.clearTimeout(timeoutRef.current as number);
+  }, []);
+
+  const memoizedCallback = useCallback(() => {
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = null;
+      callbackRef.current?.();
+    }, delay);
+  }, [delay, timeoutRef, callbackRef]);
+
+  return useMemo(() => [memoizedCallback], [memoizedCallback]);
+}
 
 const toastStyleTypes = { success: "bg-emerald-500", warning: "bg-red-500" };
 const buttonStyleTypes = {
@@ -11,21 +36,17 @@ const buttonStyleTypes = {
 export default function Toast({
   info,
   deleteToast,
+  toasts,
 }: {
   info: ToastType;
   deleteToast: any;
+  toasts: any;
 }) {
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | number | null>(
-    null
-  );
+  const [timeout] = useTimeout(() => {
+    deleteToast(info.id);
+  }, info.timeout as number);
 
-  useEffect(() => {
-    const _timeoutId = setTimeout(() => {
-      deleteToast(info.id);
-      clearTimeout(timeoutId as number);
-    }, info.timeout);
-    setTimeoutId(_timeoutId);
-  }, []);
+  useEffect(() => timeout(), []);
 
   return (
     <div
@@ -47,7 +68,6 @@ export default function Toast({
           <CloseOutlinedIcon
             onClick={() => {
               deleteToast(info.id);
-              clearTimeout(timeoutId as number);
             }}
             fontSize="inherit"
           />

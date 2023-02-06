@@ -9,6 +9,7 @@ import VerifyAuth from "./api/api-authentication/VerifyAuth";
 import Navbar from "./components/Navbar";
 import ToastContainer, { useToast } from "./components/toast/ToastContainer";
 import { axiosInstance } from "./api/axiosInterceptors";
+import RouteRenderer from "./components/RouteRenderer";
 
 export default function App() {
   const { toasts, addToast, deleteToast } = useToast();
@@ -28,7 +29,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <Navbar addToast={addToast} />
+      <Navbar />
       <div className="px-[25%] pt-24 pb-8 font-karla">
         <Routes>
           {AppRoutes.map((route, index) => {
@@ -38,7 +39,14 @@ export default function App() {
                 key={index}
                 {...rest}
                 element={
-                  requireAuth ? <AuthorizeRoute element={element} /> : element
+                  requireAuth ? (
+                    <AuthorizeRoute element={element} />
+                  ) : (
+                    <RouteRenderer
+                      element={element}
+                      props={{ addToast: addToast }}
+                    />
+                  )
                 }
               />
             );
