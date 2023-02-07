@@ -23,6 +23,7 @@ export default function CommentField({
       <BigInput
         body={comment}
         setBody={setComment}
+        styles="border border-black"
         attributes={{
           placeholder: "Comment",
           onKeyDown: checkIfShouldSubmit,

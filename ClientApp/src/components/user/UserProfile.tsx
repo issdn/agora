@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { axiosInstance } from "../../api/axiosInterceptors";
 import { UserInfoDTO } from "../../types/apiTypes";
 import ChipButton from "../data-display/ChipButton";
 import { useAuth } from "../../api/api-authentication/AuthenticationService";
-import { AuthContextType } from "../../types/appTypes";
+import { AddToastFuncType, AuthContextType } from "../../types/appTypes";
+import Button from "../Button";
 
 export default function UserProfile({
   userNickname,
   userInfo,
   setUserInfo,
+  addToast,
 }: {
   userNickname: string;
   userInfo: UserInfoDTO;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfoDTO>>;
+  addToast: AddToastFuncType;
 }) {
-  let { nickname } = useAuth() as { nickname: AuthContextType["nickname"] };
+  let { nickname, token } = useAuth() as {
+    nickname: AuthContextType["nickname"];
+    token: AuthContextType["token"];
+  };
 
   const handleFollowClick = () => {
+    if (!token) {
+      addToast("You must be logged in to follow.", "warning");
+      return;
+    }
     axiosInstance.post("/api/follow/" + userNickname).then(() => {
       if (!userInfo.userDoesFollow) {
         setUserInfo({

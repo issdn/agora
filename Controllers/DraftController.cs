@@ -60,7 +60,7 @@ namespace agora.Controllers
             databaseDraft.Title = draft.Title;
             databaseDraft.Body = draft.Body;
             await _context.SaveChangesAsync();
-            return Ok();
+            return StatusCode(201);
         }
     }
 }

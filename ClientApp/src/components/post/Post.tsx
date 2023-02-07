@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../../api/axiosInterceptors";
 import { useParams } from "react-router-dom";
 import { PostDTO } from "../../types/apiTypes";
@@ -30,6 +24,14 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
   const [comment, setComment] = useState("");
 
   let { id } = useParams();
+
+  const addOneToNumberOfComments = () => {
+    setPost({ ...post, commentsNumber: (post as PostDTO).commentsNumber + 1 });
+  };
+
+  const substractOneToNumberOfComments = () => {
+    setPost({ ...post, commentsNumber: (post as PostDTO).commentsNumber - 1 });
+  };
 
   const addLike = async () => {
     if (!token) {
@@ -70,6 +72,7 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
       .post("api/comment", { body: comment, postId: (post as PostDTO).id })
       .then((res) => {
         (e.target as HTMLTextAreaElement).value = "";
+        addOneToNumberOfComments();
         setComments([res.data, ...comments]);
         setComment("");
       });
@@ -78,9 +81,8 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
   return (
     <div className="flex flex-col gap-y-8">
       <div className="flex flex-col gap-y-1">
-        <h1 className="text-4xl font-inconsolata font-bold">
+        <h1 className="text-4xl font-inconsolata font-bold break-all">
           {(post as PostDTO).title}
-          {(post as PostDTO).userDoesLike}
         </h1>
         <div className="flex flex-row justify-between border-black">
           <div className="flex flex-row gap-x-8 text-lg">
@@ -128,6 +130,7 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
         setComments={setComments}
         postId={(post as PostDTO).id}
         numberOfComments={(post as PostDTO).commentsNumber}
+        substractOneToNumberOfComments={substractOneToNumberOfComments}
       />
     </div>
   );

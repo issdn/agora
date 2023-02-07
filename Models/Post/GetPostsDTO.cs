@@ -11,7 +11,6 @@ namespace agora
         public int? Likes { get; set; }
         public uint UserId { get; set; }
         public string Autor { get; set; } = null!;
-
         public Boolean? UserDoesLike { get; set; }
     }
 }

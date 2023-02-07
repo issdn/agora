@@ -32,7 +32,7 @@ export default function BigInput({
       onInput={(e: any) => {
         setBody(e.target.value);
       }}
-      className={`resize-none h-1 overflow-y-hidden cursor-text bg-white break-words p-2 text-xl border focus:border-blue-700 outline-none border-black
+      className={`resize-none h-1 overflow-y-hidden cursor-text bg-white break-words p-2 text-xl focus:border-blue-700 outline-none 
        ${styles}`}
     ></textarea>
   );

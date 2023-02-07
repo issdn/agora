@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { ToastColorType, ToastType } from "./ToastContainer";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
+// Code from https://daily-dev-tips.com/posts/react-cleaner-use-of-settimeout/
 function useTimeout(callback: () => void, delay: number) {
   const timeoutRef = useRef<number | null>(null);
   const callbackRef = useRef(callback);
@@ -36,11 +37,9 @@ const buttonStyleTypes = {
 export default function Toast({
   info,
   deleteToast,
-  toasts,
 }: {
   info: ToastType;
   deleteToast: any;
-  toasts: any;
 }) {
   const [timeout] = useTimeout(() => {
     deleteToast(info.id);

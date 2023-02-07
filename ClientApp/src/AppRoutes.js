@@ -33,6 +33,7 @@ const AppRoutes = [
     element: <User />,
   },
   {
+    requireAuth: true,
     path: "/editpost/:id",
     element: <EditPost />,
   },

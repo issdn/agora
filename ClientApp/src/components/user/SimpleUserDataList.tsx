@@ -16,14 +16,15 @@ export default function SimpleUserDataList({
 
   useEffect(() => {
     axiosInstance.get(url).then((res) => setData(res.data));
-  }, []);
+  }, [url]);
 
   const renderDataList = () => {
     return (
       <div className="flex flex-col gap-y-2 text-xl">
         {data.map((n) => (
           <p
-            onClick={() => navigate("user/" + n)}
+            key={n}
+            onClick={() => navigate("/user/" + n)}
             className="pl-2 border-l border-black cursor-pointer hover:underline underline-offset-2"
           >
             {n}

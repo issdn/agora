@@ -43,9 +43,9 @@ export default function PostCard({
   return (
     <div className="p-4 text-white relative">
       <div className="flex flex-col gap-y-4 relative">
-        <div className="flex flex-row items-center ">
+        <div className="flex flex-row items-center justify-between">
           <h1
-            className="font-bold text-2xl z-10 capitalize cursor-pointer w-full break-words"
+            className="font-bold text-2xl z-10 capitalize cursor-pointer break-all"
             onClick={handleGotoPost}
           >
             {postData.title}

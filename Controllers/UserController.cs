@@ -93,8 +93,8 @@ namespace agora.Controllers
         }
 
         // PUT: api/User/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(string nickname, User user)
+        [HttpPut("{nickname}")]
+        public async Task<IActionResult> PutUser(string nickname, UserDTO user)
         {
             if (nickname != user.Nickname)
             {
@@ -121,7 +121,6 @@ namespace agora.Controllers
 
             return NoContent();
         }
-
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]

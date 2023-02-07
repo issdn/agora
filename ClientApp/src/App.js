@@ -16,8 +16,21 @@ export default function App() {
 
   axiosInstance.interceptors.response.use(
     (res) => {
-      if (res.status > 400 && res.status < 500) {
-        addToast("You should log in!", "warning");
+      switch (res.status) {
+        case 404:
+          addToast("Couldn't make a request.", "warning");
+          break;
+        case 401:
+          addToast("You need to log in!", "warning");
+          break;
+        case 400:
+          addToast("Unnknown client error occured.", "warning");
+          break;
+        case 201:
+          addToast("Created succesfully!");
+          break;
+        default:
+          break;
       }
       return res;
     },

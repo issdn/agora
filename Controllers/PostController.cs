@@ -27,7 +27,7 @@ namespace agora.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<GetPostsDTO>>> GetPosts(string? category)
         {
             if (_context.Posts == null)
             {
@@ -36,10 +36,13 @@ namespace agora.Controllers
 
             var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
 
-            return await _context
-                .Posts
+            if (category == "following")
+            {
+                if (currUserNickname == null) { NoContent(); }
+                return await _context.Follows
+                .Where(f => f.FollowerUserNickname == currUserNickname)
+                .SelectMany(f => f.FollowedUser.Posts)
                 .OrderByDescending(p => p.CreatedAt)
-                .Take(10)
                 .Select(p => new GetPostsDTO
                 {
                     Id = p.Id,
@@ -48,7 +51,28 @@ namespace agora.Controllers
                     Likes = p.PostLikes.Count(),
                     Autor = p.Autor,
                     UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
-                }).ToListAsync();
+                })
+                .Take(10)
+                .ToArrayAsync();
+            }
+            else
+            {
+                return await _context
+                    .Posts
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(10)
+                    .Select(p => new GetPostsDTO
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        CreatedAt = p.CreatedAt,
+                        Likes = p.PostLikes.Count(),
+                        Autor = p.Autor,
+                        UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
+                    }).ToListAsync();
+
+            }
+
         }
 
         [AllowAnonymous]
@@ -98,7 +122,7 @@ namespace agora.Controllers
             newPost.Autor = userNickname;
             _context.Posts.Add(newPost);
             await _context.SaveChangesAsync();
-            return Ok();
+            return StatusCode(201);
         }
 
         [HttpPut("edit/{id}")]
@@ -116,7 +140,7 @@ namespace agora.Controllers
             dbPost.Title = post.Title;
             dbPost.Body = post.Body;
             await _context.SaveChangesAsync();
-            return Ok();
+            return StatusCode(201);
         }
 
         [HttpPost("like/{postId}")]
@@ -137,7 +161,7 @@ namespace agora.Controllers
             {
                 _context.Likes.Remove(like);
                 await _context.SaveChangesAsync();
-                return Ok("Disliked");
+                return StatusCode(201);
             }
         }
 
@@ -163,7 +187,7 @@ namespace agora.Controllers
                 draft.Body = postDraft.Body;
                 draft.Title = postDraft.Title;
                 await _context.SaveChangesAsync();
-                return Ok();
+                return StatusCode(201);
             }
             else
             {

@@ -13,11 +13,13 @@ export default function CommentsList({
   comments,
   setComments,
   numberOfComments,
+  substractOneToNumberOfComments,
 }: {
   postId: number;
   comments: GetCommentDTO[];
   setComments: React.Dispatch<React.SetStateAction<GetCommentDTO[]>>;
   numberOfComments: number;
+  substractOneToNumberOfComments: () => void;
 }) {
   const [commentsFetched, setCommentsFetched] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
@@ -25,11 +27,10 @@ export default function CommentsList({
   const { nickname } = useAuth() as { nickname: AuthContextType["nickname"] };
 
   const deleteComment = (commentId: number) => {
-    axiosInstance
-      .delete(`api/comment/` + commentId)
-      .then(() =>
-        setComments(comments.filter((comment) => comment.id !== commentId))
-      );
+    axiosInstance.delete(`api/comment/` + commentId).then(() => {
+      substractOneToNumberOfComments();
+      setComments(comments.filter((comment) => comment.id !== commentId));
+    });
   };
 
   const fetchComments = () => {

@@ -11,8 +11,6 @@ namespace agora.Models
             Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
             PostLikes = new HashSet<Like>();
-            Followed = new HashSet<Follow>();
-            Followers = new HashSet<Follow>();
         }
 
         public string Nickname { get; set; } = null!;
@@ -22,7 +20,5 @@ namespace agora.Models
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> PostLikes { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
-        public virtual ICollection<Follow> Followers { get; set; }
-        public virtual ICollection<Follow> Followed { get; set; }
     }
 }

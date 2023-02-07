@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Toast from "./Toast";
 
 export type ToastColorType = "warning" | "success";
@@ -46,17 +46,11 @@ export default function ToastContainer({
   toasts: ToastType[];
   deleteToast: any;
 }) {
-  useEffect(() => console.log(toasts), [toasts]);
   return (
     <div className="fixed top-0 left-0 w-screen h-screen pointer-events-none">
       <div className="w-full h-full flex flex-col gap-y-2 justify-end items-center py-8">
         {toasts.map((t) => (
-          <Toast
-            key={t.id}
-            info={t}
-            deleteToast={deleteToast}
-            toasts={toasts}
-          />
+          <Toast key={t.id} info={t} deleteToast={deleteToast} />
         ))}
       </div>
     </div>

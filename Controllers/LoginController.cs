@@ -56,7 +56,7 @@ namespace agora.Controllers
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                return Ok(new AuthenticatedResponse { Token = tokenString, Nickname = userObj.Nickname });
+                return CreatedAtAction("Login", new AuthenticatedResponse { Token = tokenString, Nickname = userObj.Nickname });
             }
             return Unauthorized();
         }

@@ -203,17 +203,6 @@ namespace agora.Data
                 entity.Property(e => e.FollowerUserNickname)
                     .HasMaxLength(32)
                     .HasColumnName("follower_user_nickname");
-
-                entity.HasOne(d => d.FollowedUser)
-                    .WithMany(p => p.Followed)
-                    .HasForeignKey(d => d.FollowedUserNickname)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_followed_user_nickname");
-
-                entity.HasOne(d => d.FollowerUser)
-                    .WithMany(p => p.Followers)
-                    .HasForeignKey(d => d.FollowerUserNickname)
-                    .HasConstraintName("fk_follower_user_nickname");
             });
 
             OnModelCreatingPartial(modelBuilder);
