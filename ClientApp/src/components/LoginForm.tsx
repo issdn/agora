@@ -25,7 +25,13 @@ const fields = [
   },
 ];
 
-export default function Login() {
+export default function LoginModal({
+  onGotoRegister,
+  onClose,
+}: {
+  onGotoRegister: () => void;
+  onClose: () => void;
+}) {
   const { onLogin } = useAuth() as AuthContextType;
 
   return (
@@ -34,14 +40,14 @@ export default function Login() {
       initialValues={initialValues}
       fields={fields}
       validationSchema={loginSchema}
-      submitFunc={onLogin}
+      submitFunc={(values) => onLogin(values).then(() => onClose())}
       submitText={"Login"}
     >
       <p key={Math.random()} className="text-base">
         Not a user?{" "}
-        <a className="text-blue-600 underline" href="/register">
+        <button className="text-blue-600 underline" onClick={onGotoRegister}>
           register
-        </a>
+        </button>
       </p>
     </BaseForm>
   );

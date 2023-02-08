@@ -1,7 +1,6 @@
 import React from "react";
 import BaseForm from "./BaseForm";
 import { object, string, ref } from "yup";
-import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../api/axiosInterceptors";
 import { UserRegisterDTO } from "../types/apiTypes";
 
@@ -35,10 +34,6 @@ const initialValues = {
 };
 
 const fields = [
-  {
-    fieldName: "Email",
-    attributes: { id: "email", name: "email", type: "email" },
-  },
   { fieldName: "Nickname", attributes: { id: "nickname", name: "nickname" } },
   {
     fieldName: "Password",
@@ -54,26 +49,19 @@ const fields = [
   },
 ];
 
-export default function Register() {
-  const navigate = useNavigate();
-
+export default function RegisterForm({ onClose }: { onClose: () => void }) {
   const onRegister = async (values: UserRegisterDTO) => {
-    await axiosInstance
-      .post("api/auth/register", values)
-      .then(() => navigate("/login"))
-      .catch((reason) => alert(reason));
+    await axiosInstance.post("api/auth/register", values).then(() => onClose());
   };
 
   return (
-    <div className="flex flex-col">
-      <BaseForm
-        title={"Register"}
-        initialValues={initialValues}
-        fields={fields}
-        validationSchema={registerSchema}
-        submitFunc={onRegister}
-        submitText={"Register"}
-      />
-    </div>
+    <BaseForm
+      title={"Register"}
+      initialValues={initialValues}
+      fields={fields}
+      validationSchema={registerSchema}
+      submitFunc={onRegister}
+      submitText={"Register"}
+    />
   );
 }

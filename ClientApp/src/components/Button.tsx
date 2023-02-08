@@ -24,7 +24,7 @@ export default function Button({
     <button
       onClick={onClick}
       {...attributes}
-      className={`text-xl transition duration-400 ${styleByType[type]} ${styles}`}
+      className={`transition duration-400 ${styleByType[type]} ${styles}`}
     >
       {children}
     </button>

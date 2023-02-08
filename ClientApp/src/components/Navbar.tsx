@@ -2,6 +2,10 @@ import React from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
 import { useNavigate } from "react-router-dom";
+import Button from "./Button";
+import LoginForm from "./LoginForm";
+import Modal, { useModal } from "./Modal";
+import RegisterForm from "./RegisterForm";
 
 export default function Navbar() {
   const { token, onLogout, nickname } = useAuth() as {
@@ -9,6 +13,18 @@ export default function Navbar() {
     onLogout: AuthContextType["onLogout"];
     nickname: string;
   };
+
+  const {
+    isOpen: isLoginOpen,
+    onOpen: onLoginOpen,
+    onClose: onLoginClose,
+  } = useModal();
+
+  const {
+    isOpen: isRegisterOpen,
+    onOpen: onRegisterOpen,
+    onClose: onRegisterClose,
+  } = useModal();
 
   const navigate = useNavigate();
 
@@ -30,7 +46,7 @@ export default function Navbar() {
             </li>
             <li>
               <p
-                className="cursor-pointer bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 text-2xl rounded-lg text-white"
+                className="cursor-pointer bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 rounded-lg text-white"
                 onClick={() => navigate("user/" + nickname)}
               >
                 {nickname}
@@ -39,20 +55,34 @@ export default function Navbar() {
           </>
         ) : (
           <li>
-            <a href="/login">Login</a>
+            <Button type="clear" onClick={onLoginOpen}>
+              Login
+            </Button>
           </li>
         )}
         <li>
           {token ? null : (
-            <a
+            <button
               className="bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 rounded-lg text-white"
-              href="register"
+              onClick={onRegisterOpen}
             >
               Register
-            </a>
+            </button>
           )}
         </li>
       </ul>
+      <Modal title="Login" isOpen={isLoginOpen} onClose={onLoginClose}>
+        <LoginForm
+          onClose={onLoginClose}
+          onGotoRegister={() => {
+            onLoginClose();
+            onRegisterOpen();
+          }}
+        />
+      </Modal>
+      <Modal title="Register" isOpen={isRegisterOpen} onClose={onRegisterClose}>
+        <RegisterForm onClose={onRegisterClose} />
+      </Modal>
     </div>
   );
 }

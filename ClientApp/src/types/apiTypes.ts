@@ -24,7 +24,6 @@ export type UserLoginDTO = {
 };
 
 export type UserRegisterDTO = {
-  email: string;
   nickname: string;
   password: string;
   passconfirmation: string;

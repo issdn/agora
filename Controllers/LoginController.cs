@@ -11,6 +11,8 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using agora.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace agora.Controllers
 {
@@ -44,21 +46,44 @@ namespace agora.Controllers
                 {
                     return Forbid();
                 }
-                var secretKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("randomasskeyhahahahahahahahahahaha"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: "https://localhost:7065",
-                    audience: "https://localhost:7065",
-                    claims: new List<Claim>{
-                        new Claim("nickname", userObj.Nickname),
-                    },
-                    expires: DateTime.Now.AddMinutes(5),
-                    signingCredentials: signinCredentials
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+                var tokenString = getNewJwtToken(userObj);
                 return CreatedAtAction("Login", new AuthenticatedResponse { Token = tokenString, Nickname = userObj.Nickname });
             }
             return Unauthorized();
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("newpassword")]
+        public async Task<IActionResult> NewPassword(ResetPasswordDTO resetPasswordData)
+        {
+            if (resetPasswordData is null)
+            {
+                return BadRequest("Invalid client request");
+            }
+
+            var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+
+            var userObj = _context.Users.Where(u => u.Nickname.Equals(currUserNickname)).FirstOrDefault();
+            if (userObj == null) { return Unauthorized(); }
+
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            PasswordVerificationResult passresult = hasher.VerifyHashedPassword(userObj, userObj.Password, resetPasswordData.OldPassword);
+            if (passresult == PasswordVerificationResult.Failed)
+            {
+                return Unauthorized("Old password doesn't match.");
+            }
+            PasswordVerificationResult arePasswordsTheSame = hasher.VerifyHashedPassword(userObj, userObj.Password, resetPasswordData.NewPassword);
+            if (arePasswordsTheSame == PasswordVerificationResult.Success)
+            {
+                return BadRequest("Your new password is the same as old.");
+            }
+
+            String password = hasher.HashPassword(userObj, resetPasswordData.NewPassword);
+            userObj.Password = password;
+            await _context.SaveChangesAsync();
+
+            return Ok("Password changed.");
         }
 
         [HttpPost("register")]
@@ -82,6 +107,22 @@ namespace agora.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Register", user);
+        }
+
+        public string getNewJwtToken(User user)
+        {
+            var secretKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("randomasskeyhahahahahahahahahahaha"));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var tokeOptions = new JwtSecurityToken(
+                issuer: "https://localhost:7065",
+                audience: "https://localhost:7065",
+                claims: new List<Claim>{
+                        new Claim("nickname", user.Nickname),
+                },
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: signinCredentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
         }
     }
 }

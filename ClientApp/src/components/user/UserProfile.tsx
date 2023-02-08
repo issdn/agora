@@ -4,6 +4,8 @@ import { UserInfoDTO } from "../../types/apiTypes";
 import ChipButton from "../data-display/ChipButton";
 import { useAuth } from "../../api/api-authentication/AuthenticationService";
 import { AddToastFuncType, AuthContextType } from "../../types/appTypes";
+import Modal, { useModal } from "../Modal";
+import EditUserPasswordForm from "../EditUserPasswordForm";
 import Button from "../Button";
 
 export default function UserProfile({
@@ -21,6 +23,8 @@ export default function UserProfile({
     nickname: AuthContextType["nickname"];
     token: AuthContextType["token"];
   };
+
+  const { isOpen, onOpen, onClose } = useModal();
 
   const handleFollowClick = () => {
     if (!token) {
@@ -66,9 +70,21 @@ export default function UserProfile({
               {userInfo.userDoesFollow ? "Followed" : "Follow"}
             </p>
           </ChipButton>
-        ) : null}
+        ) : (
+          <Button styles="text-base" type="clear" onClick={onOpen}>
+            Reset Password
+          </Button>
+        )}
       </div>
       <p>Likes: {userInfo.numberOfLikes}</p>
+      <Modal
+        title="Reset Password"
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      >
+        <EditUserPasswordForm onClose={onClose} />
+      </Modal>
     </div>
   );
 }

@@ -156,10 +156,6 @@ namespace agora.Data
                     .HasMaxLength(32)
                     .HasColumnName("nickname");
 
-                entity.Property(e => e.Email)
-                    .HasMaxLength(254)
-                    .HasColumnName("email");
-
                 entity.Property(e => e.Password)
                     .HasMaxLength(128)
                     .HasColumnName("password");

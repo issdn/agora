@@ -15,7 +15,6 @@ namespace agora.Models
 
         public string Nickname { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public string Email { get; set; } = null!;
         public virtual PostDraft? PostDraft { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> PostLikes { get; set; }
