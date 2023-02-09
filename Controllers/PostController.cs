@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using agora.Models;
@@ -35,14 +30,22 @@ namespace agora.Controllers
             }
 
             var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
+            if (currUserNickname == null) { BadRequest(); }
+
+            var currUser = await _context.Users
+                .Include(u => u.FollowedUserNicknames)
+                .ThenInclude(p => p.Posts)
+                .Where(u => u.Nickname == currUserNickname)
+                .FirstOrDefaultAsync();
+
+            if (currUser == null) { return Ok("Current user not found"); }
 
             if (category == "following")
             {
-                if (currUserNickname == null) { NoContent(); }
-                return await _context.Follows
-                .Where(f => f.FollowerUserNickname == currUserNickname)
-                .SelectMany(f => f.FollowedUser.Posts)
+                return currUser.FollowedUserNicknames
+                .SelectMany(u => u.Posts)
                 .OrderByDescending(p => p.CreatedAt)
+                .Take(10)
                 .Select(p => new GetPostsDTO
                 {
                     Id = p.Id,
@@ -52,8 +55,7 @@ namespace agora.Controllers
                     Autor = p.Autor,
                     UserDoesLike = p.PostLikes.Any(l => l.UserNickname == currUserNickname)
                 })
-                .Take(10)
-                .ToArrayAsync();
+                .ToArray();
             }
             else
             {
@@ -75,6 +77,21 @@ namespace agora.Controllers
 
         }
 
+        [HttpDelete("{postId}")]
+        public async Task<ActionResult> CreatePost(int postId)
+        {
+            if (_context.Posts == null)
+            {
+                return Problem("Entity set 'UserDbContext.Posts' is null.");
+            }
+
+            var post = _context.Posts.Find(postId);
+            if (post == null) { return NotFound("Couldn't find the post with given id."); }
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+            return Ok($"Deleted the post with id: {post.Id}");
+        }
+
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<GetSinglePostDTO>> GetPostById(int id)
@@ -87,10 +104,9 @@ namespace agora.Controllers
             var post = await _context.Posts.Where(u => u.Id == id).FirstOrDefaultAsync();
             if (post == null) { return NotFound(); }
 
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var userNickname = identity?.FindFirst("nickname")?.Value;
+            var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
 
-            var userDoesLike = _context.Likes.Any(l => l.PostId == id && l.UserNickname == userNickname);
+            var userDoesLike = _context.Likes.Any(l => l.PostId == id && l.UserNickname == sessionUserNickname);
             var numberOfComments = _context.Comments.Where(u => u.PostId == id).Count();
 
             return new GetSinglePostDTO
@@ -153,7 +169,7 @@ namespace agora.Controllers
             var like = _context.Likes.Where(l => l.PostId == post.Id).Where(p => p.UserNickname == user.Nickname).FirstOrDefault();
             if (like == null)
             {
-                _context.Likes.Add(new Like { UserNickname = user.Nickname, PostId = post.Id, User = user, Post = post });
+                _context.Likes.Add(new Like { UserNickname = user.Nickname, PostId = post.Id, UserNicknameNavigation = user, Post = post });
                 await _context.SaveChangesAsync();
                 return Ok("Liked");
             }

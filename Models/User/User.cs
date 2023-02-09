@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using agora.Models;
 
-namespace agora.Models
+namespace agora
 {
     public partial class User
     {
@@ -10,14 +9,21 @@ namespace agora.Models
         {
             Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
-            PostLikes = new HashSet<Like>();
+            FollowedUserNicknames = new HashSet<User>();
+            FollowerUserNicknames = new HashSet<User>();
         }
 
         public string Nickname { get; set; } = null!;
         public string Password { get; set; } = null!;
+
         public virtual PostDraft? PostDraft { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Like> PostLikes { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<Post> Posts { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual ICollection<User> FollowedUserNicknames { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public virtual ICollection<User> FollowerUserNicknames { get; set; }
     }
 }

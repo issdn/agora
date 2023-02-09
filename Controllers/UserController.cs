@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using agora.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,6 +69,8 @@ namespace agora.Controllers
 
             var user = await _context
                 .Users
+                .Include(u => u.FollowedUserNicknames)
+                .Include(u => u.FollowerUserNicknames)
                 .Where(u => u.Nickname == nickname)
                 .FirstOrDefaultAsync();
 
@@ -85,9 +80,9 @@ namespace agora.Controllers
             {
                 Nickname = user.Nickname,
                 NumberOfLikes = _context.Posts.Where(p => p.Autor == user.Nickname).Sum(p => p.PostLikes.Count()),
-                NumberOfFollowed = _context.Follows.Where(f => f.FollowerUserNickname == user.Nickname).Count(),
-                NumberOfFollowers = _context.Follows.Where(f => f.FollowedUserNickname == user.Nickname).Count(),
-                UserDoesFollow = _context.Follows.Any(f => f.FollowerUserNickname == currUserNickname),
+                NumberOfFollowed = user.FollowedUserNicknames.Count(),
+                NumberOfFollowers = user.FollowerUserNicknames.Count(),
+                UserDoesFollow = user.FollowerUserNicknames.Any(u => u.Nickname == currUserNickname),
                 NumberOfPosts = _context.Posts.Where(p => p.Autor == user.Nickname).Count()
             });
         }

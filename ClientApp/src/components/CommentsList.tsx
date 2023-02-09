@@ -2,7 +2,7 @@ import { axiosInstance } from "../api/axiosInterceptors";
 import React, { useState } from "react";
 import { GetCommentDTO } from "../types/apiTypes";
 import { prettyDate } from "../scripts/utils";
-import Button from "./Button";
+import Button from "./buttons/Button";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";

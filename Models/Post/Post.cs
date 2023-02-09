@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace agora.Models
+namespace agora
 {
     public partial class Post
     {
@@ -17,7 +17,7 @@ namespace agora.Models
         public DateTime? CreatedAt { get; set; }
         public string Autor { get; set; } = null!;
 
-        public virtual User User { get; set; } = null!;
+        public virtual User AutorNavigation { get; set; } = null!;
         public virtual ICollection<Like> PostLikes { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }

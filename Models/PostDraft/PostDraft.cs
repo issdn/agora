@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace agora.Models
+namespace agora
 {
     public partial class PostDraft
     {

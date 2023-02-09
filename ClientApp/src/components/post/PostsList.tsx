@@ -14,6 +14,10 @@ export default function PostsList({
 }) {
   const [posts, setPosts] = useState<PostInfoDTO[]>([]);
 
+  const handlePostDelete = (id: number) => {
+    setPosts(posts.filter((post) => post.id !== id));
+  };
+
   useEffect(() => {
     axiosInstance.get(url).then((res) => setPosts([...posts, ...res.data]));
   }, [url]);
@@ -22,7 +26,7 @@ export default function PostsList({
     return !(posts.length > 0) ? (
       <p className="text-xl">{emptyMessage}</p>
     ) : (
-      <PostsListBase posts={posts} />
+      <PostsListBase posts={posts} handlePostDelete={handlePostDelete} />
     );
   };
 

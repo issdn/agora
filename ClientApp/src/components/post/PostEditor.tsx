@@ -1,5 +1,5 @@
 import React, { FormEvent, useCallback, useEffect, useState } from "react";
-import Button from "../Button";
+import Button from "../buttons/Button";
 import BigInput from "../BigInput";
 import { SimplePostDTO } from "../../types/apiTypes";
 

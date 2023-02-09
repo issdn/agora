@@ -28,98 +28,56 @@ namespace agora.Controllers
         [HttpGet("follows/{userNickname}")]
         public async Task<ActionResult<string[]>> GetUserFollowsByTheirNickname(string userNickname)
         {
-            if (_context.Follows == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.Where(u => u.Nickname == userNickname).FirstOrDefaultAsync();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return await _context.Follows.Where(f => f.FollowerUserNickname == userNickname).Select(u => u.FollowedUserNickname).ToArrayAsync();
+            var user = await _context.Users
+                .Include(u => u.FollowedUserNicknames)
+                .Where(f => f.Nickname == userNickname)
+                .FirstOrDefaultAsync();
+            if (user == null) { return NotFound("Couldn't find an user with given nickname."); }
+            return user.FollowedUserNicknames.Select(u => u.Nickname).ToArray();
         }
 
         [AllowAnonymous]
         [HttpGet("followers/{userNickname}")]
         public async Task<ActionResult<string[]>> GetUserFollowersByTheirNickname(string userNickname)
         {
-            if (_context.Follows == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.Where(u => u.Nickname == userNickname).FirstOrDefaultAsync();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Follows.Where(f => f.FollowedUserNickname == userNickname).Select(u => u.FollowerUserNickname).ToArrayAsync();
+            var user = await _context.Users
+                .Include(u => u.FollowerUserNicknames)
+                .Where(f => f.Nickname == userNickname)
+                .FirstOrDefaultAsync();
+            if (user == null) { return NotFound("Couldn't find an user with given nickname."); }
+            return user.FollowerUserNicknames.Select(u => u.Nickname).ToArray();
         }
 
         [HttpPost("{userNickname}")]
         public async Task<ActionResult<Follow>> FollowUser(String userNickname)
         {
-            if (_context.Follows == null)
-            {
-                return Problem("Entity set 'ForumDbContext.Follows' is null.");
-            }
             var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            if (sessionUserNickname == null) { return Unauthorized(); }
+            var currUser = await _context.Users
+                .Include(u => u.FollowedUserNicknames)
+                .Where(u => u.Nickname == sessionUserNickname)
+                .FirstOrDefaultAsync();
+            if (currUser == null) { return NotFound("You apparently don't exist."); }
 
-            if (sessionUserNickname == userNickname) { return BadRequest(); }
-
-            var probablyExistingFollow = await _context.Follows
-            .Where(f => f.FollowedUserNickname == userNickname && f.FollowerUserNickname == sessionUserNickname)
-            .FirstOrDefaultAsync();
-
-            if (probablyExistingFollow != null)
+            var userToFollow = await _context.Users.Where(u => u.Nickname == userNickname).FirstOrDefaultAsync();
+            if (userToFollow == null)
             {
-                _context.Follows.Remove(probablyExistingFollow);
+                return NotFound("User doesn't exist anymore.");
+            }
+
+            var follow = currUser.FollowedUserNicknames.Contains(userToFollow);
+
+            if (!follow)
+            {
+                currUser.FollowedUserNicknames.Remove(userToFollow);
             }
             else
             {
-                var follow = new Follow { FollowerUserNickname = sessionUserNickname, FollowedUserNickname = userNickname };
-                _context.Follows.Add(follow);
+                currUser.FollowedUserNicknames.Add(userToFollow);
             }
 
             await _context.SaveChangesAsync();
 
-            return Ok();
-        }
-
-        [HttpDelete("{userNickname}")]
-        public async Task<IActionResult> Unfollow(string userNickname)
-        {
-            if (_context.Follows == null)
-            {
-                return NotFound();
-            }
-
-            var sessionUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            if (sessionUserNickname == null) { return Unauthorized(); }
-
-            var follow = await _context.Follows.Where(f => f.FollowedUserNickname == sessionUserNickname).FirstOrDefaultAsync();
-            if (follow == null)
-            {
-                return NotFound();
-            }
-
-            _context.Follows.Remove(follow);
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
-
-        private bool FollowExists(string FollowerUserNickname, string FollowedUserNickname)
-        {
-            return (_context.Follows?.Any(e =>
-                (e.FollowerUserNickname == FollowerUserNickname && e.FollowedUserNickname == FollowedUserNickname)))
-                .GetValueOrDefault();
+            return Ok("Followed!");
         }
     }
 }

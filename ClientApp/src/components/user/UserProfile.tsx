@@ -6,7 +6,7 @@ import { useAuth } from "../../api/api-authentication/AuthenticationService";
 import { AddToastFuncType, AuthContextType } from "../../types/appTypes";
 import Modal, { useModal } from "../Modal";
 import EditUserPasswordForm from "../EditUserPasswordForm";
-import Button from "../Button";
+import Button from "../buttons/Button";
 
 export default function UserProfile({
   userNickname,

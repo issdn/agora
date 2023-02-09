@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
 import { useNavigate } from "react-router-dom";
-import Button from "./Button";
+import Button from "./buttons/Button";
 import LoginForm from "./LoginForm";
 import Modal, { useModal } from "./Modal";
 import RegisterForm from "./RegisterForm";

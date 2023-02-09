@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Formik, Field, Form } from "formik";
-import Button from "./Button";
+import Button from "./buttons/Button";
 import { ObjectSchema } from "yup";
 import { FieldsType } from "../types/appTypes";
 

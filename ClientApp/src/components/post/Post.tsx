@@ -2,19 +2,23 @@ import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../../api/axiosInterceptors";
 import { useParams } from "react-router-dom";
 import { PostDTO } from "../../types/apiTypes";
-import PrettyDate from "../iconify/PrettyDate";
+import PrettyDate from "../buttons/PrettyDate";
 import CommentField from "../CommentField";
 import CommentsList from "../CommentsList";
 import { GetCommentDTO } from "../../types/apiTypes";
 import { AddToastFuncType, AuthContextType } from "../../types/appTypes";
 import { useAuth } from "../../api/api-authentication/AuthenticationService";
-import LikeButton from "../iconify/LikeButton";
-import UserButton from "../iconify/UserButton";
+import LikeButton from "../buttons/LikeButton";
+import UserButton from "../buttons/UserButton";
+import PostAuthorButtons from "../buttons/PostAuthorButtons";
+import TextDecreaseOutlinedIcon from "@mui/icons-material/TextDecreaseOutlined";
+import TextIncreaseOutlinedIcon from "@mui/icons-material/TextIncreaseOutlined";
+import IconButton from "../buttons/IconButton";
 
 const sizes = ["base", "lg", "xl", "2xl", "3xl", "4xl"];
 
 export default function Post({ addToast }: { addToast: AddToastFuncType }) {
-  const { token } = useAuth() as {
+  const { token, nickname } = useAuth() as {
     token: AuthContextType["token"];
     nickname: string;
   };
@@ -94,25 +98,32 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
               likes={(post as PostDTO).likes}
             />
           </div>
+          {nickname === (post as PostDTO).autor ? (
+            <PostAuthorButtons
+              handlePostDelete={() => null}
+              postId={(post as PostDTO).id}
+              type="secondary"
+            />
+          ) : null}
         </div>
         <div className="mt-12 flex flex-col gap-y-4">
           <div className="flex flex-row justify-end gap-x-2">
-            <span
+            <IconButton
+              type="small"
               onClick={() => {
                 if (sizeIndex > 0) setSizeIndex(sizeIndex - 1);
               }}
-              className="material-symbols-outlined bg-gray-300 hover:bg-gray-400 cursor-pointer rounded-md px-1 text-2xl select-none"
             >
-              text_decrease
-            </span>
-            <span
+              <TextDecreaseOutlinedIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton
+              type="small"
               onClick={() => {
                 if (sizeIndex < sizes.length - 1) setSizeIndex(sizeIndex + 1);
               }}
-              className="material-symbols-outlined bg-gray-300 hover:bg-gray-400 cursor-pointer rounded-md px-1 text-2xl select-none"
             >
-              text_increase
-            </span>
+              <TextIncreaseOutlinedIcon fontSize="inherit" />
+            </IconButton>
           </div>
           <p className={`text-${sizes[sizeIndex]}`}>{(post as PostDTO).body}</p>
         </div>
