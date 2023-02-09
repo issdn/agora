@@ -29,6 +29,14 @@ export default function App() {
         case 201:
           addToast("Created succesfully!");
           break;
+        case 200:
+          if (typeof res.data === "string" && res.data) {
+            console.log(res);
+            addToast(res.data);
+          } else {
+            if (res.status.message) addToast(res.status.message);
+          }
+          break;
         default:
           break;
       }

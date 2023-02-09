@@ -78,11 +78,7 @@ namespace agora.Data
 
             modelBuilder.Entity<Like>(entity =>
             {
-                entity.HasKey(e => e.PostId)
-                .HasName("PRIMARY");
-
-                entity.HasKey(e => e.UserNickname)
-                .HasName("PRIMARY");
+                entity.HasKey(e => new { e.PostId, e.UserNickname });
 
                 entity.ToTable("like");
 
@@ -97,7 +93,7 @@ namespace agora.Data
                     .HasColumnName("user_nickname");
 
                 entity.HasOne(d => d.UserNicknameNavigation)
-                    .WithMany()
+                    .WithMany(d => d.PostLikes)
                     .HasForeignKey(d => d.UserNickname)
                     .HasConstraintName("fk_liking_user");
 

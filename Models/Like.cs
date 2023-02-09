@@ -7,7 +7,6 @@ namespace agora
     {
         public string UserNickname { get; set; } = null!;
         public int PostId { get; set; }
-
         public virtual Post Post { get; set; } = null!;
         public virtual User UserNicknameNavigation { get; set; } = null!;
     }

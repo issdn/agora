@@ -35,6 +35,7 @@ namespace agora.Controllers
             var currUser = await _context.Users
                 .Include(u => u.FollowedUserNicknames)
                 .ThenInclude(p => p.Posts)
+                .AsSplitQuery()
                 .Where(u => u.Nickname == currUserNickname)
                 .FirstOrDefaultAsync();
 
@@ -156,20 +157,23 @@ namespace agora.Controllers
             dbPost.Title = post.Title;
             dbPost.Body = post.Body;
             await _context.SaveChangesAsync();
-            return StatusCode(201);
+            return Ok("Post edited.");
         }
 
         [HttpPost("like/{postId}")]
         public async Task<ActionResult> Like(int postId)
         {
-            var post = _context.Posts.Where(p => p.Id == postId).FirstOrDefault();
+            var post = await _context.Posts.Where(p => p.Id == postId).FirstOrDefaultAsync();
+            if (post == null) { return NotFound(); }
+
             var currUserNickname = UserController.GetIdentityClaimNickname(HttpContext);
-            var user = _context.Users.Where(u => u.Nickname == currUserNickname).FirstOrDefault();
-            if (user == null || post == null) { return NotFound(); }
-            var like = _context.Likes.Where(l => l.PostId == post.Id).Where(p => p.UserNickname == user.Nickname).FirstOrDefault();
+            if (currUserNickname == null) { return BadRequest(); }
+
+            var like = await _context.Likes.Where(l => l.PostId == post.Id && l.UserNickname == currUserNickname).FirstOrDefaultAsync();
+
             if (like == null)
             {
-                _context.Likes.Add(new Like { UserNickname = user.Nickname, PostId = post.Id, UserNicknameNavigation = user, Post = post });
+                _context.Likes.Add(new Like { UserNickname = currUserNickname, PostId = post.Id });
                 await _context.SaveChangesAsync();
                 return Ok("Liked");
             }
@@ -177,7 +181,7 @@ namespace agora.Controllers
             {
                 _context.Likes.Remove(like);
                 await _context.SaveChangesAsync();
-                return StatusCode(201);
+                return Ok("Disliked");
             }
         }
 
