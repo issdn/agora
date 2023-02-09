@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../api/api-authentication/AuthenticationService";
 import { AuthContextType } from "../types/appTypes";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import Button from "./buttons/Button";
 import LoginForm from "./LoginForm";
 import Modal, { useModal } from "./Modal";
 import RegisterForm from "./RegisterForm";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 export default function Navbar() {
   const { token, onLogout, nickname } = useAuth() as {
@@ -13,6 +14,8 @@ export default function Navbar() {
     onLogout: AuthContextType["onLogout"];
     nickname: string;
   };
+
+  const [navShown, setNavShown] = useState(false);
 
   const {
     isOpen: isLoginOpen,
@@ -29,14 +32,27 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex w-full bg-cultured flex-row px-12 py-4 justify-between items-center font-inconsolata border-b border-black fixed z-50">
-      <h1 className="text-3xl">
-        <a href="/">AGORA</a>
-      </h1>
-      <ul className="flex flex-row text-2xl gap-x-8 items-center">
+    <div
+      className={`fixed z-50 flex h-screen w-full flex-col items-center justify-between border-b border-black bg-primary px-12 font-inconsolata md:h-fit md:flex-row ${
+        navShown ? "" : "h-fit"
+      }`}
+    >
+      <div className="flex w-full flex-row items-center justify-between py-4 text-3xl md:w-fit">
+        <h1>
+          <a href="/">AGORA</a>
+        </h1>
+        <div onClick={() => setNavShown(!navShown)} className="md:hidden">
+          <MenuOutlinedIcon fontSize="inherit" />
+        </div>
+      </div>
+      <ul
+        className={`flex h-full w-full grow flex-col-reverse items-center justify-center gap-y-4 gap-x-8 bg-primary text-2xl md:flex-row md:justify-end ${
+          navShown ? "" : "hidden"
+        }`}
+      >
         {token ? (
           <>
-            <li>
+            <li className="break-keep">
               <a href="/newpost">Create Post</a>
             </li>
             <li>
@@ -46,7 +62,7 @@ export default function Navbar() {
             </li>
             <li>
               <p
-                className="cursor-pointer bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 rounded-lg text-white"
+                className="cursor-pointer rounded-lg bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 text-white"
                 onClick={() => navigate("user/" + nickname)}
               >
                 {nickname}
@@ -63,7 +79,7 @@ export default function Navbar() {
         <li>
           {token ? null : (
             <button
-              className="bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 rounded-lg text-white"
+              className="rounded-lg bg-gradient-to-bl from-[#8E2DE2] to-[#4A00E0] px-2 py-1 text-white"
               onClick={onRegisterOpen}
             >
               Register

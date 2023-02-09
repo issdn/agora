@@ -38,11 +38,11 @@ export default function PostEditor({
   }, [post]);
 
   return (
-    <div className="flex flex-row justify-center h-full w-full pt-16 font-karla">
-      <div className="flex flex-col gap-y-4 w-full h-full">
-        <h1 className="text-2xl font-inconsolata">New Post</h1>
+    <div className="flex h-full w-full flex-row justify-center pt-16 font-karla">
+      <div className="flex h-full w-full flex-col gap-y-4">
+        <h1 className="font-inconsolata text-2xl">New Post</h1>
         <form
-          className="flex flex-col gap-y-6 h-full"
+          className="flex h-full flex-col gap-y-6"
           onSubmit={(e) => {
             onSubmit(e);
             timedDisableButton();
@@ -54,14 +54,16 @@ export default function PostEditor({
               setPost({ ...post, title: e.target.value });
             }}
             placeholder="Title goes here..."
-            className="text-4xl p-4"
+            className="p-4 text-4xl"
           />
           <BigInput
             body={post.body}
-            setBody={(e) => setPost({ ...post, body: e.target.value })}
+            setBody={(value: HTMLInputElement["value"]) =>
+              setPost({ ...post, body: value })
+            }
             attributes={{ placeholder: "Your thoughts go here..." }}
           />
-          <div className="w-1/2 flex flex-row gap-x-16">
+          <div className="flex w-1/2 flex-row gap-x-16">
             <Button
               attributes={{ disabled: buttonDisabled }}
               styles={"w-full md:w-64"}

@@ -44,11 +44,11 @@ export default function PostCard({
 
   return (
     <div>
-      <div className="p-4 text-white relative">
-        <div className="flex flex-col gap-y-4 relative">
-          <div className="flex flex-row items-start justify-between gap-x-8">
+      <div className="relative p-4 text-white">
+        <div className="relative flex flex-col gap-y-12 md:gap-y-4">
+          <div className="flex flex-row items-start justify-between gap-x-4">
             <h1
-              className="font-bold text-2xl z-10 capitalize cursor-pointer break-all"
+              className="z-10 cursor-pointer break-all text-2xl font-bold capitalize"
               onClick={handleGotoPost}
             >
               {postData.title}
@@ -60,8 +60,8 @@ export default function PostCard({
               />
             ) : null}
           </div>
-          <div className="flex flex-row justify-between text-lg">
-            <div className="flex flex-row gap-x-8 z-10">
+          <div className="flex flex-row justify-between md:text-lg">
+            <div className="z-10 flex flex-row gap-x-8">
               {!dontShowAuthor ? (
                 <UserButton
                   styles="z-10 cursor-pointer"
@@ -78,7 +78,7 @@ export default function PostCard({
         </div>
         <div
           onClick={handleGotoPost}
-          className="absolute w-full h-full top-0 left-0 cursor-pointer rounded-xl z-0"
+          className="absolute top-0 left-0 z-0 h-full w-full cursor-pointer rounded-xl"
           style={{
             background: `linear-gradient(90deg, ${randomGradient[0]}, ${randomGradient[1]})`,
           }}

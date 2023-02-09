@@ -4,11 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        blueviolet: "#540d6eff",
-        paradisepink: "#ee4266ff",
-        sunglow: "#ffd23fff",
-        cultured: "#F5F5F5",
-        pinetree: "#1f271bff",
+        primary: "#f5f5f5",
       },
       fontFamily: {
         karla: ["karla"],

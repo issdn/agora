@@ -26,9 +26,6 @@ export default function App() {
         case 400:
           addToast("Unnknown client error occured.", "warning");
           break;
-        case 201:
-          addToast("Created succesfully!");
-          break;
         case 200:
           if (typeof res.data === "string" && res.data) {
             console.log(res);
@@ -51,7 +48,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Navbar />
-      <div className="px-[25%] pt-24 pb-8 font-karla">
+      <div className="px-8 pt-24 pb-8 font-karla md:px-[25%]">
         <Routes>
           {AppRoutes.map((route, index) => {
             const { element, requireAuth, ...rest } = route;

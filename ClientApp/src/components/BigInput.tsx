@@ -29,10 +29,10 @@ export default function BigInput({
       }}
       ref={areaRef}
       {...attributes}
-      onInput={(e: any) => {
-        setBody(e.target.value);
+      onInput={(event: React.FormEvent<HTMLTextAreaElement>) => {
+        setBody((event.target as HTMLInputElement).value);
       }}
-      className={`resize-none h-1 overflow-y-hidden cursor-text bg-white break-words p-2 text-xl focus:border-blue-700 outline-none 
+      className={`h-1 cursor-text resize-none overflow-y-hidden break-words bg-white p-2 text-xl outline-none focus:border-blue-700 
        ${styles}`}
     ></textarea>
   );

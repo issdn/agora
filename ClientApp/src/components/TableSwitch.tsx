@@ -19,12 +19,12 @@ export default function TableSwitch({
   setCurrOpenTab: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
-    <div className="flex flex-row text-xl gap-x-6 border-b border-black">
+    <div className="flex flex-row gap-x-6 border-b border-black text-sm md:text-xl">
       {items.map((i) => (
         <p
           key={i.key}
           onClick={() => setCurrOpenTab(i.key)}
-          className={`px-2 py-1 cursor-pointer ${
+          className={`cursor-pointer px-2 py-1 ${
             currOpenTab === i.key ? "bg-gray-300" : ""
           }`}
         >

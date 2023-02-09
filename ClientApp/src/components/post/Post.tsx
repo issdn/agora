@@ -69,9 +69,8 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
     axiosInstance.get("api/post/" + id).then((res) => setPost(res.data));
   }, []);
 
-  const submitComment = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const submitComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!(e.target as HTMLTextAreaElement)?.value) return;
     axiosInstance
       .post("api/comment", { body: comment, postId: (post as PostDTO).id })
       .then((res) => {
@@ -85,7 +84,7 @@ export default function Post({ addToast }: { addToast: AddToastFuncType }) {
   return (
     <div className="flex flex-col gap-y-8">
       <div className="flex flex-col gap-y-1">
-        <h1 className="text-4xl font-inconsolata font-bold break-all">
+        <h1 className="break-all font-inconsolata text-4xl font-bold">
           {(post as PostDTO).title}
         </h1>
         <div className="flex flex-row justify-between border-black">
