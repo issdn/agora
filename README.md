@@ -1,5 +1,5 @@
 # Agora
-80% functional anonymous publishing platform.
+70% functional mockish, monolythically built, anonymous publishing platform.
 
 ---
 ## Built with:

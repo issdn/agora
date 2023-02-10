@@ -47,7 +47,7 @@ export default function Navbar() {
       </div>
       <ul
         className={`flex h-full w-full grow flex-col-reverse items-center justify-center gap-y-4 gap-x-8 bg-primary text-2xl md:flex-row md:justify-end ${
-          navShown ? "" : "hidden"
+          navShown ? "" : "hidden md:flex"
         }`}
       >
         {token ? (

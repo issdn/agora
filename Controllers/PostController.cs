@@ -39,10 +39,10 @@ namespace agora.Controllers
                 .Where(u => u.Nickname == currUserNickname)
                 .FirstOrDefaultAsync();
 
-            if (currUser == null) { return Ok("Current user not found"); }
 
             if (category == "following")
             {
+                if (currUser == null) { return Ok(); }
                 return currUser.FollowedUserNicknames
                 .SelectMany(u => u.Posts)
                 .OrderByDescending(p => p.CreatedAt)
