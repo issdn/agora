@@ -1,5 +1,17 @@
 # Agora
-70% functional mockish, monolythically built, anonymous publishing platform.
+Functional, mockish, bodged, monolythically built, anonymous publishing platform.
+
+|Main Page|Post Editor|
+|---|---|
+|![](https://github.com/issdn/agora/blob/master/screens/1.png)|![](https://github.com/issdn/agora/blob/master/screens/4.png)|
+
+|User Profile|Post Viewer|
+|---|---|
+|![](https://github.com/issdn/agora/blob/master/screens/2.png)|![](https://github.com/issdn/agora/blob/master/screens/3.png)|
+
+|Sql Model|
+|---|
+|![](https://github.com/issdn/agora/blob/master/screens/5.png)|
 
 ---
 ## Built with:
